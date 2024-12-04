@@ -237,7 +237,7 @@ int findItemNoInList(pITEM itemNode, int itemNo)
 
 
 //아이템의 노드번호를 받아 그 번호의 노드를 삭제
-void delItemFromList(pITEM itemNode, int targetNodeNumber)
+int delItemFromList(pITEM itemNode, int targetNodeNumber)
 {	
 	pITEM beforeTarget;		//제거할 노드의 앞노드
 	pITEM target;		//제거할 노드
@@ -315,11 +315,12 @@ void PrintItemList(pITEM itemNode)
 */
 int main()
 {	
+	restarting:
 	pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
 	pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
 	pWORM addWorm = malloc(sizeof(WORM));//첫번째 웜몸통
 	pITEM itemNode = malloc(sizeof(ITEM));//아이템용 단일 연결리스트
-
+	char restart;
 
 	wormHeadNode->next = NULL;
 	wormHeadNode->before = addWorm;
@@ -408,9 +409,23 @@ int main()
 			system("cls");
 			gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
 			printf("벽에 부딛혔습니다. GAME OVER");
-			FreeWormList(wormTailNode);
-			FreeItemList(itemNode);
-			return 0;
+			gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
+			printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
+			scanf("%c", &restart);
+			if(restart == 'r' || restart == 'R'){
+				FreeWormList(wormTailNode);
+				FreeItemList(itemNode);
+				goto restarting;
+			}
+			else if(restart == 'q' || restart == 'Q'){
+				FreeWormList(wormTailNode);
+				FreeItemList(itemNode);
+				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
+				printf("프로그램을 종료합니다");
+				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
+				system("pause");
+				return 0;
+			}
 		}
 
 		//아이템을 생성
@@ -436,6 +451,9 @@ int main()
 
 	FreeWormList(wormTailNode);
 	FreeItemList(itemNode);
-
+	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
+	printf("프로그램을 종료합니다");
+	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
+	system("pause");
 	return 0;
 }
