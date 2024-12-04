@@ -4,7 +4,7 @@
 #include <time.h>	//랜덤 시드용 time 함수 헤더
 #include <conio.h>	//gotoxy에서 사용할 api 헤더
 
-#define FIELD_WIDTH 50	//필드가로길이
+#define FIELD_WIDTH 70	//필드가로길이
 #define FIELD_HEIGHT 25	//필드세로길이
 #define LEFT 75			//키보드 좌 화살표의 char값
 #define RIGHT 77		//키보드 우
@@ -15,7 +15,7 @@
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
 #define LEFT_MARGIN 30	//화면왼쪽마진(공백)
 #define TOP_MARGIN 3	//화면 상단마진(공백)
-#define DELAYTIME 200	//Sleep함수에 들어갈 x/1000 초
+#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -128,9 +128,11 @@ void PrintScore(int score)
 {
 	gotoxy(FIELD_WIDTH + 3,  3);
 	printf("점수 : %d점",score);
-	gotoxy(FIELD_WIDTH + 3,  5);
+	gotoxy(FIELD_WIDTH + 3, 5); \
+	printf("일시정지하려면 S를 누르세요");
+	gotoxy(FIELD_WIDTH + 3,  7);\
 	printf("종료하려면 Q를 누르세요");
-	gotoxy(FIELD_WIDTH + 3,  7);
+	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
 }
 
@@ -367,6 +369,14 @@ int main()
 			{
 				printf("%c", key);
 				break;
+			}
+			if (key == 's' || key == 'S') {
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
+				printf("일시정지 상태!\n");
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
+				system("pause");
+				system("cls");
+				PrintField();
 			}
 			if (key == LEFT && wormHeadPointer->direction != RIGHT)
 			{
