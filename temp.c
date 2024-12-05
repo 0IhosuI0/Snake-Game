@@ -4,7 +4,7 @@
 #include <time.h>	//랜덤 시드용 time 함수 헤더
 #include <conio.h>	//gotoxy에서 사용할 api 헤더
 
-#define FIELD_WIDTH 70	//필드가로길이
+#define FIELD_WIDTH 50	//필드가로길이
 #define FIELD_HEIGHT 25	//필드세로길이
 #define LEFT 75			//키보드 좌 화살표의 char값
 #define RIGHT 77		//키보드 우
@@ -35,6 +35,7 @@ typedef struct _ITEM
 	int y;
 	int itemType;
 	int itemNo;
+	int renditem;
 	struct _ITEM* next;
 }ITEM, *pITEM;
 #pragma pack(pop)
@@ -198,17 +199,28 @@ void CreateItem(pITEM itemNode, int* itemNo) {
 	itemNode->next = newItem;
 	newItem->x = 3 + rand() % (FIELD_WIDTH - 3);
 	newItem->y = 3 + rand() % (FIELD_HEIGHT - 3);
+	newItem->renditem = rand() % 3;
 	newItem->itemType = ITEM_EXP;
 }
 
 //아이템 화면에 출력
 void PrintItem(pITEM itemNode)
 {
+	
 	pITEM curr = itemNode->next;
 	while (curr != NULL)
 	{
 		gotoxy(curr->x, curr->y);
-		printf("@");
+		if (curr->renditem == 0)
+		{
+			printf("@");
+		}
+		else if (curr->renditem == 1) {
+			printf("#");
+		}
+		else if (curr->renditem == 2) {
+			printf("$");
+		}
 		curr = curr->next;
 	}
 }
@@ -411,7 +423,7 @@ int main()
 			printf("벽에 부딛혔습니다. GAME OVER");
 			gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
 			printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
-			scanf("%c", &restart);
+			scanf_s("%c", &restart);
 			if(restart == 'r' || restart == 'R'){
 				FreeWormList(wormTailNode);
 				FreeItemList(itemNode);
