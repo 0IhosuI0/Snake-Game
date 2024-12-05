@@ -7,3 +7,4 @@
 !.gitignore
 !.gitattributes
 !*.c
+!*.exe
