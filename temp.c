@@ -1,34 +1,34 @@
-#include <stdio.h>	//Ç¥ÁØÀÔÃâ·ÂÇì´õ
-#include <stdlib.h>	//malloc, free µî
-#include <Windows.h>//windows console api Çì´õ
-#include <time.h>	//·£´ı ½Ãµå¿ë time ÇÔ¼ö Çì´õ
-#include <conio.h>	//gotoxy¿¡¼­ »ç¿ëÇÒ api Çì´õ
+#include <stdio.h>	//í‘œì¤€ì…ì¶œë ¥í—¤ë”
+#include <stdlib.h>	//malloc, free ë“±
+#include <Windows.h>//windows console api í—¤ë”
+#include <time.h>	//ëœë¤ ì‹œë“œìš© time í•¨ìˆ˜ í—¤ë”
+#include <conio.h>	//gotoxyì—ì„œ ì‚¬ìš©í•  api í—¤ë”
 
-#define FIELD_WIDTH 70	//ÇÊµå°¡·Î±æÀÌ
-#define FIELD_HEIGHT 25	//ÇÊµå¼¼·Î±æÀÌ
-#define LEFT 75			//Å°º¸µå ÁÂ È­»ìÇ¥ÀÇ char°ª
-#define RIGHT 77		//Å°º¸µå ¿ì
-#define UP 72			//Å°º¸µå À§
-#define DOWN 80			//Áöº¸µå ¾Æ·¡
-#define ITEM_MAX 2		//È­¸é¿¡ Ç¥½ÃµÇ´Â ¾ÆÀÌÅÛ°³¼ö
-#define ITEM_GOLD 101	//°ñµå ¾ÆÀÌÅÛ ÀÎµğÄÉÀÌÅÍ
-#define ITEM_EXP 102	//°æÇèÄ¡ ¾ÆÀÌÅÛ ÀÎµğÄÉÀÌÅÍ
-#define LEFT_MARGIN 30	//È­¸é¿ŞÂÊ¸¶Áø(°ø¹é)
-#define TOP_MARGIN 3	//È­¸é »ó´Ü¸¶Áø(°ø¹é)
-#define DELAYTIME 100	//SleepÇÔ¼ö¿¡ µé¾î°¥ x/1000 ÃÊ
+#define FIELD_WIDTH 70	//í•„ë“œê°€ë¡œê¸¸ì´
+#define FIELD_HEIGHT 25	//í•„ë“œì„¸ë¡œê¸¸ì´
+#define LEFT 75			//í‚¤ë³´ë“œ ì¢Œ í™”ì‚´í‘œì˜ charê°’
+#define RIGHT 77		//í‚¤ë³´ë“œ ìš°
+#define UP 72			//í‚¤ë³´ë“œ ìœ„
+#define DOWN 80			//ì§€ë³´ë“œ ì•„ë˜
+#define ITEM_MAX 2		//í™”ë©´ì— í‘œì‹œë˜ëŠ” ì•„ì´í…œê°œìˆ˜
+#define ITEM_GOLD 101	//ê³¨ë“œ ì•„ì´í…œ ì¸ë””ì¼€ì´í„°
+#define ITEM_EXP 102	//ê²½í—˜ì¹˜ ì•„ì´í…œ ì¸ë””ì¼€ì´í„°
+#define LEFT_MARGIN 30	//í™”ë©´ì™¼ìª½ë§ˆì§„(ê³µë°±)
+#define TOP_MARGIN 3	//í™”ë©´ ìƒë‹¨ë§ˆì§„(ê³µë°±)
+#define DELAYTIME 100	//Sleepí•¨ìˆ˜ì— ë“¤ì–´ê°ˆ x/1000 ì´ˆ
 
-//Áö··ÀÌ¸¦ ±¸ÇöÇÒ ÀÌÁß¿¬°á¸®½ºÆ® ±¸Á¶Ã¼
+//ì§€ë ì´ë¥¼ êµ¬í˜„í•  ì´ì¤‘ì—°ê²°ë¦¬ìŠ¤íŠ¸ êµ¬ì¡°ì²´
 #pragma pack(push,1)
 typedef struct _WORM
 {
-	int x;	//xÁÂÇ¥
-	int y;	//yÁÂÇ¥
-	char direction;	//ÁøÇà¹æÇâ
-	struct _WORM *next;	//´ÙÀ½³ëµåÁÖ¼Ò
-	struct _WORM *before;//ÀÌÀü³ëµåÁÖ¼Ò
+	int x;	//xì¢Œí‘œ
+	int y;	//yì¢Œí‘œ
+	char direction;	//ì§„í–‰ë°©í–¥
+	struct _WORM *next;	//ë‹¤ìŒë…¸ë“œì£¼ì†Œ
+	struct _WORM *before;//ì´ì „ë…¸ë“œì£¼ì†Œ
 }WORM, *pWORM;
 
-//¾ÆÀÌÅÛÀ» ±¸ÇöÇÒ ´ÜÀÏ¿¬°á¸®½ºÆ® ±¸Á¶Ã¼
+//ì•„ì´í…œì„ êµ¬í˜„í•  ë‹¨ì¼ì—°ê²°ë¦¬ìŠ¤íŠ¸ êµ¬ì¡°ì²´
 typedef struct _ITEM
 {
 	int x;
@@ -40,50 +40,50 @@ typedef struct _ITEM
 }ITEM, *pITEM;
 #pragma pack(pop)
 
-//Ä¿¼­¸¦ ÀÏÁ¤ ÁÂÇ¥·Î ÀÌµ¿
+//ì»¤ì„œë¥¼ ì¼ì • ì¢Œí‘œë¡œ ì´ë™
 void gotoxy(int x, int y)
 {
 	COORD Pos;
-	Pos.X = x + LEFT_MARGIN;//°¡·Î¼¼·Î ºñÀ²À» ¸ÂÃß±â À§ÇØ¼­ °¡·ÎÀÇ ÁÂÇ¥´Â 2¹è
+	Pos.X = x + LEFT_MARGIN;//ê°€ë¡œì„¸ë¡œ ë¹„ìœ¨ì„ ë§ì¶”ê¸° ìœ„í•´ì„œ ê°€ë¡œì˜ ì¢Œí‘œëŠ” 2ë°°
 	Pos.Y = y + TOP_MARGIN;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
 
-//°ÔÀÓ¿µ¿ªÃâ·Â
+//ê²Œì„ì˜ì—­ì¶œë ¥
 void PrintField() 
 {
 	for (int i = 1; i < FIELD_WIDTH; i++)
 	{
 		gotoxy(i, 0);
-		printf("¦¡");
+		printf("â”€");
 		gotoxy(i, FIELD_HEIGHT);
-		printf("¦¡");
+		printf("â”€");
 	}
 
 	for (int i = 1; i < FIELD_HEIGHT; i++)
 	{
 		gotoxy(0, i);
-		printf("¦¢");
+		printf("â”‚");
 		gotoxy(FIELD_WIDTH,i);
-		printf("¦¢");
+		printf("â”‚");
 	}
 	gotoxy(0, 0);
-	printf("¦£");
+	printf("â”Œ");
 	gotoxy(0, FIELD_HEIGHT);
-	printf("¦¦");
+	printf("â””");
 	gotoxy(FIELD_WIDTH, 0);
-	printf("¦¤");
+	printf("â”");
 	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
-	printf("¦¥");
+	printf("â”˜");
 }
 
-//Áö··ÀÌ¸¦ ´Ã¸®´Â ÇÔ¼ö(ÀÌÁß¿¬°á¸®½ºÆ®ÀÇ Å×ÀÏÂÊ¿¡ ³ëµå Ãß°¡)
+//ì§€ë ì´ë¥¼ ëŠ˜ë¦¬ëŠ” í•¨ìˆ˜(ì´ì¤‘ì—°ê²°ë¦¬ìŠ¤íŠ¸ì˜ í…Œì¼ìª½ì— ë…¸ë“œ ì¶”ê°€)
 void AddWorm(pWORM wormTailNode)
 {
 	pWORM newNode = malloc(sizeof(WORM));
 	pWORM temp = wormTailNode->next;
 
-	//»õ ³ëµåÀÇ ÁÖ¼Ú°ª ÀÌ¾îÁÖ±â;
+	//ìƒˆ ë…¸ë“œì˜ ì£¼ì†Ÿê°’ ì´ì–´ì£¼ê¸°;
 	newNode->before = wormTailNode;
 	newNode->next = wormTailNode->next;
 	wormTailNode->next = newNode;
@@ -112,7 +112,7 @@ void AddWorm(pWORM wormTailNode)
 
 }
 
-//¿¬°á¸®½ºÆ®¸¦ ¹Ş¾Æ¼­ Áö··ÀÌ Ãâ·Â
+//ì—°ê²°ë¦¬ìŠ¤íŠ¸ë¥¼ ë°›ì•„ì„œ ì§€ë ì´ ì¶œë ¥
 void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)	
 {
 	pWORM curr = wormTailNode->next;
@@ -124,27 +124,27 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 	}
 }
 
-//°ÔÀÓÁ¡¼ö Ãâ·Â
+//ê²Œì„ì ìˆ˜ ì¶œë ¥
 void PrintScore(int score)	
 {
 	gotoxy(FIELD_WIDTH + 3,  3);
-	printf("Á¡¼ö : %dÁ¡",score);
+	printf("ì ìˆ˜ : %dì ",score);
 	gotoxy(FIELD_WIDTH + 3, 5); 
-	printf("ÀÏ½ÃÁ¤ÁöÇÏ·Á¸é S¸¦ ´©¸£¼¼¿ä");
+	printf("ì¼ì‹œì •ì§€í•˜ë ¤ë©´ Së¥¼ ëˆ„ë¥´ì„¸ìš”");
 	gotoxy(FIELD_WIDTH + 3,  7);
-	printf("Á¾·áÇÏ·Á¸é Q¸¦ ´©¸£¼¼¿ä");
+	printf("ì¢…ë£Œí•˜ë ¤ë©´ Që¥¼ ëˆ„ë¥´ì„¸ìš”");
 	gotoxy(FIELD_WIDTH + 3,  9);
-	printf("Á¶ÀÛÀº È­»ìÇ¥Å°·Î");
+	printf("ì¡°ì‘ì€ í™”ì‚´í‘œí‚¤ë¡œ");
 }
 
-//¿úÀÌ Áö³ª°£ ÀÚ¸® Áö¿ì±â
+//ì›œì´ ì§€ë‚˜ê°„ ìë¦¬ ì§€ìš°ê¸°
 void ClearWorm(int x, int y)
 {
 	gotoxy(x, y);
 	printf(" ");
 }
 
-//¿ú ¿òÁ÷ÀÌ±â 
+//ì›œ ì›€ì§ì´ê¸° 
 void MoveWorm(pWORM wormTailNode, pWORM wormHeadNode)
 {
 	pWORM curr;
@@ -175,7 +175,7 @@ void MoveWorm(pWORM wormTailNode, pWORM wormHeadNode)
 }
 
 
-//¿ú ¸®½ºÆ®¿¡ ÇÒ´çµÈ ¸Ş¸ğ¸®¸¦ ¼øÂ÷·Î ÇØÁ¦
+//ì›œ ë¦¬ìŠ¤íŠ¸ì— í• ë‹¹ëœ ë©”ëª¨ë¦¬ë¥¼ ìˆœì°¨ë¡œ í•´ì œ
 void FreeWormList(pWORM wormTailNode)
 {
 	pWORM curr;
@@ -189,7 +189,7 @@ void FreeWormList(pWORM wormTailNode)
 	}
 }
 
-//item ¹ß»ı½ÃÅ°±â
+//item ë°œìƒì‹œí‚¤ê¸°
 void CreateItem(pITEM itemNode, int* itemNo) {
 		
 	pITEM newItem = malloc(sizeof(ITEM));
@@ -203,7 +203,7 @@ void CreateItem(pITEM itemNode, int* itemNo) {
 	newItem->itemType = ITEM_EXP;
 }
 
-//¾ÆÀÌÅÛ È­¸é¿¡ Ãâ·Â
+//ì•„ì´í…œ í™”ë©´ì— ì¶œë ¥
 void PrintItem(pITEM itemNode)
 {
 	
@@ -225,15 +225,15 @@ void PrintItem(pITEM itemNode)
 	}
 }
 
-//¸®½ºÆ®¿¡¼­ itemNoÀÇ À§Ä¡¸¦ Ã£¾Æ¼­ Ä«¿îÅÍ¸¦ ¸®ÅÏ
+//ë¦¬ìŠ¤íŠ¸ì—ì„œ itemNoì˜ ìœ„ì¹˜ë¥¼ ì°¾ì•„ì„œ ì¹´ìš´í„°ë¥¼ ë¦¬í„´
 int findItemNoInList(pITEM itemNode, int itemNo)	
 {
-	int numberOfNode = 0;	//³ëµå¹øÈ£¸¦ ÀúÀåÇÒ º¯¼ö
+	int numberOfNode = 0;	//ë…¸ë“œë²ˆí˜¸ë¥¼ ì €ì¥í•  ë³€ìˆ˜
 
-	pITEM curr;		//³ëµå»çÀÌ¸¦ ¿òÁ÷ÀÏ Æ÷ÀÎÅÍ
-	curr = itemNode->next;		//Ã¹¹øÂ° µ¥ÀÌÅÍ¸¦ °¡ÁöÅ°´Â ÁÖ¼Ò¸¦ curr¿¡ ÇÒ´ç
+	pITEM curr;		//ë…¸ë“œì‚¬ì´ë¥¼ ì›€ì§ì¼ í¬ì¸í„°
+	curr = itemNode->next;		//ì²«ë²ˆì§¸ ë°ì´í„°ë¥¼ ê°€ì§€í‚¤ëŠ” ì£¼ì†Œë¥¼ currì— í• ë‹¹
 
-	while (curr != NULL)	//¹İº¹¹®À» µ¹¸®¸é¼­ Ã£´Â µ¥ÀÌÅÍ¸¦ ¹ß°ßÇÏ¸é ³ëµå¹øÈ£¸¦ ¸®ÅÏ
+	while (curr != NULL)	//ë°˜ë³µë¬¸ì„ ëŒë¦¬ë©´ì„œ ì°¾ëŠ” ë°ì´í„°ë¥¼ ë°œê²¬í•˜ë©´ ë…¸ë“œë²ˆí˜¸ë¥¼ ë¦¬í„´
 	{
 		numberOfNode++;
 		if (itemNo == curr->itemNo)
@@ -248,34 +248,34 @@ int findItemNoInList(pITEM itemNode, int itemNo)
 
 
 
-//¾ÆÀÌÅÛÀÇ ³ëµå¹øÈ£¸¦ ¹Ş¾Æ ±× ¹øÈ£ÀÇ ³ëµå¸¦ »èÁ¦
+//ì•„ì´í…œì˜ ë…¸ë“œë²ˆí˜¸ë¥¼ ë°›ì•„ ê·¸ ë²ˆí˜¸ì˜ ë…¸ë“œë¥¼ ì‚­ì œ
 int delItemFromList(pITEM itemNode, int targetNodeNumber)
 {	
-	pITEM beforeTarget;		//Á¦°ÅÇÒ ³ëµåÀÇ ¾Õ³ëµå
-	pITEM target;		//Á¦°ÅÇÒ ³ëµå
+	pITEM beforeTarget;		//ì œê±°í•  ë…¸ë“œì˜ ì•ë…¸ë“œ
+	pITEM target;		//ì œê±°í•  ë…¸ë“œ
 
 	int counter = 0;
 
 	beforeTarget = itemNode;
 
-	if (targetNodeNumber < 0)   // 0ÀÌ ÀÔ·ÂµÇ¸é FirstNode¸¦ »èÁ¦ÇÏ±â ¶§¹®¿¡ ½ÇÇàÇÏÁö ¾Ê°í ¸®ÅÏ
+	if (targetNodeNumber < 0)   // 0ì´ ì…ë ¥ë˜ë©´ FirstNodeë¥¼ ì‚­ì œí•˜ê¸° ë•Œë¬¸ì— ì‹¤í–‰í•˜ì§€ ì•Šê³  ë¦¬í„´
 		return 0;
 
-	//³ëµå¸¦ targetNodeNumber-1 ¸¸Å­ ÀÌµ¿½ÃÄÑ¼­ beforeTargetÀ» Á¦°ÅÇÒ ³ëµå ¾ÕÀ¸·Î ÀÌµ¿½ÃÅ´
+	//ë…¸ë“œë¥¼ targetNodeNumber-1 ë§Œí¼ ì´ë™ì‹œì¼œì„œ beforeTargetì„ ì œê±°í•  ë…¸ë“œ ì•ìœ¼ë¡œ ì´ë™ì‹œí‚´
 	while (counter < targetNodeNumber - 1)
 	{
 		beforeTarget = beforeTarget->next;
 		counter = counter + 1;
 	}
 
-	//³ëµå¸¦ ¸®½ºÆ®¿¡¼­ Á¦°Å
+	//ë…¸ë“œë¥¼ ë¦¬ìŠ¤íŠ¸ì—ì„œ ì œê±°
 	target = beforeTarget->next;
 	beforeTarget->next = target->next;
 	free(target);
 }
 
-//¾ÆÀÌÅÛ(°ñ¹ğÀÌ)¿Í ¿úÀÇ Çìµå°¡ ¸¸³µ´ÂÁö °Ë»ç, 
-//delItemNo´Â ¸ÔÀº ¾ÆÀÌÅÛÀ» Áö¿ì´Â ÇÔ¼ö·Î ³Ñ°ÜÁÙ º¯¼ö
+//ì•„ì´í…œ(ê³¨ë±…ì´)ì™€ ì›œì˜ í—¤ë“œê°€ ë§Œë‚¬ëŠ”ì§€ ê²€ì‚¬, 
+//delItemNoëŠ” ë¨¹ì€ ì•„ì´í…œì„ ì§€ìš°ëŠ” í•¨ìˆ˜ë¡œ ë„˜ê²¨ì¤„ ë³€ìˆ˜
 int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo)
 {
 	pITEM curr;
@@ -288,16 +288,16 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo)
 			if (curr->itemType == ITEM_EXP)
 			{
 				*delItemNo = curr->itemNo;
-				return 1; //¾ÆÀÌÅÛ ¸ÔÀ¸¸é 1¸®ÅÏ
+				return 1; //ì•„ì´í…œ ë¨¹ìœ¼ë©´ 1ë¦¬í„´
 			}
 		}
 		nodeNo++;
 		curr = curr->next;
 	}
-	return 0;//¾ÆÀÌÅÛÀ» ¾È¸¸³ª¸é 0
+	return 0;//ì•„ì´í…œì„ ì•ˆë§Œë‚˜ë©´ 0
 }
 
-//¾ÆÀÌÅÛÀÇ ¸µÅ©µå ¸®½ºÆ® ¸Ş¸ğ¸® ÇØÁ¦
+//ì•„ì´í…œì˜ ë§í¬ë“œ ë¦¬ìŠ¤íŠ¸ ë©”ëª¨ë¦¬ í•´ì œ
 void FreeItemList(pITEM itemNode)
 {
 	pITEM curr;
@@ -311,7 +311,7 @@ void FreeItemList(pITEM itemNode)
 	}
 }
 
-//½ÇÇà½Ã Å×½ºÆ®¿ëÀ¸·Î ¸¸µé¾î ³õÀº ¾ÆÀÌÅÛ »ı¼º ¸®½ºÆ® Ãâ·ÂÇÔ¼ö
+//ì‹¤í–‰ì‹œ í…ŒìŠ¤íŠ¸ìš©ìœ¼ë¡œ ë§Œë“¤ì–´ ë†“ì€ ì•„ì´í…œ ìƒì„± ë¦¬ìŠ¤íŠ¸ ì¶œë ¥í•¨ìˆ˜
 /* 
 void PrintItemList(pITEM itemNode)
 {
@@ -320,7 +320,7 @@ void PrintItemList(pITEM itemNode)
 	gotoxy( -LEFT_MARGIN, 2);
 	while (curr != NULL)
 	{
-		printf("¾ÆÀÌÅÛ¹øÈ£ : %d\n", curr->itemNo);
+		printf("ì•„ì´í…œë²ˆí˜¸ : %d\n", curr->itemNo);
 		curr = curr->next;
 	}
 }
@@ -328,13 +328,13 @@ void PrintItemList(pITEM itemNode)
 int main()
 {	
 	system("mode con:cols=150 lines=40");
-	SetConsoleTitle("ÁØÈ£¼öÀÇ Snake-Game");
+	SetConsoleTitle("ì¤€í˜¸ìˆ˜ì˜ Snake-Game");
 	
 	restarting:
-	pWORM wormHeadNode = malloc(sizeof(WORM));//ÀÌÁß¿¬°á¸®½ºÆ® Çìµå³ëµå
-	pWORM wormTailNode = malloc(sizeof(WORM));//ÀÌÁß¿¬°á¸®½ºÆ® Å×ÀÏ³ëµå
-	pWORM addWorm = malloc(sizeof(WORM));//Ã¹¹øÂ° ¿ú¸öÅë
-	pITEM itemNode = malloc(sizeof(ITEM));//¾ÆÀÌÅÛ¿ë ´ÜÀÏ ¿¬°á¸®½ºÆ®
+	pWORM wormHeadNode = malloc(sizeof(WORM));//ì´ì¤‘ì—°ê²°ë¦¬ìŠ¤íŠ¸ í—¤ë“œë…¸ë“œ
+	pWORM wormTailNode = malloc(sizeof(WORM));//ì´ì¤‘ì—°ê²°ë¦¬ìŠ¤íŠ¸ í…Œì¼ë…¸ë“œ
+	pWORM addWorm = malloc(sizeof(WORM));//ì²«ë²ˆì§¸ ì›œëª¸í†µ
+	pITEM itemNode = malloc(sizeof(ITEM));//ì•„ì´í…œìš© ë‹¨ì¼ ì—°ê²°ë¦¬ìŠ¤íŠ¸
 	char restart = 0;
 
 	wormHeadNode->next = NULL;
@@ -350,31 +350,31 @@ int main()
 	itemNode->next = NULL;
 	itemNode->itemNo = -1;
 	
-	//Áö··ÀÌ °ÔÀÓ½ÃÀÛ Áö··ÀÌ »ı¼º
+	//ì§€ë ì´ ê²Œì„ì‹œì‘ ì§€ë ì´ ìƒì„±
 	for(int i = 9; i>0 ; i--)
 		AddWorm(wormTailNode);
 	
-	//¿úÀÇ ¸Ó¸®¸¦ °¡¸®Å°´Â Æ÷ÀÎÅÍ
+	//ì›œì˜ ë¨¸ë¦¬ë¥¼ ê°€ë¦¬í‚¤ëŠ” í¬ì¸í„°
 	pWORM wormHeadPointer = addWorm;
 
-	int score = 0;			//ÃÖÃÊÁ¡¼ö
-	int itemCounter = 0;	//¾ÆÀÌÅÛ »ı¼º ÇÑµµ Ä«¿îÅÍ
-	char key;				//Å°ÀÔ·Â¹ŞÀ» º¯¼ö
-	int delItemNo=0;		//Áö¿ï¾ÆÀÌÅÛ³Ñ¹ö¸¦ ¹ŞÀ» º¯¼öÃÊ±âÈ­
-	int itemNo = 10000		;//¾ÆÀÌÅÛÀÇ ÃÖÃÊ¹øÈ£
+	int score = 0;			//ìµœì´ˆì ìˆ˜
+	int itemCounter = 0;	//ì•„ì´í…œ ìƒì„± í•œë„ ì¹´ìš´í„°
+	char key;				//í‚¤ì…ë ¥ë°›ì„ ë³€ìˆ˜
+	int delItemNo=0;		//ì§€ìš¸ì•„ì´í…œë„˜ë²„ë¥¼ ë°›ì„ ë³€ìˆ˜ì´ˆê¸°í™”
+	int itemNo = 10000		;//ì•„ì´í…œì˜ ìµœì´ˆë²ˆí˜¸
 
-	//¾ÆÀÌÅÛ »ı¼º À§Ä¡ ³­¼ö ½Ãµå
+	//ì•„ì´í…œ ìƒì„± ìœ„ì¹˜ ë‚œìˆ˜ ì‹œë“œ
 	srand((unsigned int)time(NULL));
 	
-	system("cls");	//È­¸éÁö¿ì°í
-	PrintField();	//ÇÊµå Ãâ·Â
+	system("cls");	//í™”ë©´ì§€ìš°ê³ 
+	PrintField();	//í•„ë“œ ì¶œë ¥
 
 
 	while (1)
 	{
-		//Å×½ºÆ®¿ë Ãâ·ÂºÎºĞ
+		//í…ŒìŠ¤íŠ¸ìš© ì¶œë ¥ë¶€ë¶„
 		//gotoxy(-LEFT_MARGIN, 0);
-		//printf("¸ÔÀº ¾ÆÀÌÅÛ : %d\n",delItemNo);
+		//printf("ë¨¹ì€ ì•„ì´í…œ : %d\n",delItemNo);
 		//PrintItemList(itemNode);
 
 		if (_kbhit() != 0)
@@ -388,7 +388,7 @@ int main()
 			}
 			if (key == 's' || key == 'S') {
 				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
-				printf("ÀÏ½ÃÁ¤Áö »óÅÂ!\n");
+				printf("ì¼ì‹œì •ì§€ ìƒíƒœ!\n");
 				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
 				system("pause");
 				system("cls");
@@ -412,21 +412,21 @@ int main()
 			}
 		}
 		
-		//¿ú Áö³ª°£ ÀÚ¸® Áö¿ì±â
+		//ì›œ ì§€ë‚˜ê°„ ìë¦¬ ì§€ìš°ê¸°
 		ClearWorm(wormTailNode->next->x, wormTailNode->next->y);
 		
-		//¿ú ÇÑÄ­¾¿ ¿òÁ÷ÀÌ±â
+		//ì›œ í•œì¹¸ì”© ì›€ì§ì´ê¸°
 		MoveWorm(wormTailNode, wormHeadNode);
 
-		//º®¿¡ ºÎµóÈ÷¸é °ÔÀÓ¿À¹ö
+		//ë²½ì— ë¶€ë”›íˆë©´ ê²Œì„ì˜¤ë²„
 		if (wormHeadPointer->x == 0 || wormHeadPointer->x == FIELD_WIDTH || wormHeadPointer->y == 0 || wormHeadPointer->y == FIELD_HEIGHT)
 		{
 			while(restart != 'r' && restart != 'R' && restart != 'q' && restart != 'Q'){
 				system("cls");
 				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
-				printf("º®¿¡ ºÎµóÇû½À´Ï´Ù. GAME OVER");
+				printf("ë²½ì— ë¶€ë”›í˜”ìŠµë‹ˆë‹¤. GAME OVER");
 				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
-				printf("´Ù½Ã ½ÃÀÛÇÏ±â  R, ÇÁ·Î±×·¥ Á¾·á  Q / input :  ");
+				printf("ë‹¤ì‹œ ì‹œì‘í•˜ê¸°  R, í”„ë¡œê·¸ë¨ ì¢…ë£Œ  Q / input :  ");
 				scanf_s("%c", &restart);
 				if(restart == 'r' || restart == 'R'){
 					getchar();
@@ -438,7 +438,7 @@ int main()
 					FreeWormList(wormTailNode);
 					FreeItemList(itemNode);
 					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
-					printf("ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù");
+					printf("í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤");
 					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
 					system("pause");
 					return 0;
@@ -448,14 +448,14 @@ int main()
 
 		
 
-		//¾ÆÀÌÅÛÀ» »ı¼º
+		//ì•„ì´í…œì„ ìƒì„±
 		while (itemCounter < ITEM_MAX)
 		{
 			CreateItem(itemNode,&itemNo);
 			itemCounter++;
 		}
 
-		//¾ÆÀÌÅÛ ¸Ô¾ú´ÂÁö È®ÀÎ
+		//ì•„ì´í…œ ë¨¹ì—ˆëŠ”ì§€ í™•ì¸
 		if (CheckItemHit(wormHeadPointer, itemNode, &delItemNo))
 		{
 			AddWorm(wormTailNode);
@@ -472,7 +472,7 @@ int main()
 	FreeWormList(wormTailNode);
 	FreeItemList(itemNode);
 	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
-	printf("ÇÁ·Î±×·¥À» Á¾·áÇÕ´Ï´Ù");
+	printf("í”„ë¡œê·¸ë¨ì„ ì¢…ë£Œí•©ë‹ˆë‹¤");
 	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
 	system("pause");
 	return 0;
