@@ -129,9 +129,9 @@ void PrintScore(int score)
 {
 	gotoxy(FIELD_WIDTH + 3,  3);
 	printf("점수 : %d점",score);
-	gotoxy(FIELD_WIDTH + 3, 5); \
+	gotoxy(FIELD_WIDTH + 3, 5); 
 	printf("일시정지하려면 S를 누르세요");
-	gotoxy(FIELD_WIDTH + 3,  7);\
+	gotoxy(FIELD_WIDTH + 3,  7);v
 	printf("종료하려면 Q를 누르세요");
 	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
@@ -328,6 +328,7 @@ void PrintItemList(pITEM itemNode)
 int main()
 {	
 	system("mode con:cols=150 lines=40");
+	SetConsoleTitle("준호수의 Snake-Game");
 	
 	restarting:
 	pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
