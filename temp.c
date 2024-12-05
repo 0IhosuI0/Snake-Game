@@ -327,6 +327,8 @@ void PrintItemList(pITEM itemNode)
 */
 int main()
 {	
+	system("mode con:cols=150 lines=40");
+	
 	restarting:
 	pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
 	pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
