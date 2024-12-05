@@ -328,14 +328,14 @@ void PrintItemList(pITEM itemNode)
 int main()
 {	
 	system("mode con:cols=150 lines=40");
-	SetConsoleTitle("Junhosu's Snake-Game");
+	SetConsoleTitle("준호수의 Snake-Game");
 	
 	restarting:
 	pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
 	pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
 	pWORM addWorm = malloc(sizeof(WORM));//첫번째 웜몸통
 	pITEM itemNode = malloc(sizeof(ITEM));//아이템용 단일 연결리스트
-	char restart;
+	char restart = 0;
 
 	wormHeadNode->next = NULL;
 	wormHeadNode->before = addWorm;
@@ -421,27 +421,32 @@ int main()
 		//벽에 부딛히면 게임오버
 		if (wormHeadPointer->x == 0 || wormHeadPointer->x == FIELD_WIDTH || wormHeadPointer->y == 0 || wormHeadPointer->y == FIELD_HEIGHT)
 		{
-			system("cls");
-			gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
-			printf("벽에 부딛혔습니다. GAME OVER");
-			gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
-			printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
-			scanf_s("%c", &restart);
-			if(restart == 'r' || restart == 'R'){
-				FreeWormList(wormTailNode);
-				FreeItemList(itemNode);
-				goto restarting;
-			}
-			else if(restart == 'q' || restart == 'Q'){
-				FreeWormList(wormTailNode);
-				FreeItemList(itemNode);
-				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
-				printf("프로그램을 종료합니다");
-				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
-				system("pause");
-				return 0;
+			while(restart != 'r' && restart != 'R' && restart != 'q' && restart != 'Q'){
+				system("cls");
+				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
+				printf("벽에 부딛혔습니다. GAME OVER");
+				gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
+				printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
+				scanf_s("%c", &restart);
+				if(restart == 'r' || restart == 'R'){
+					getchar();
+					FreeWormList(wormTailNode);
+					FreeItemList(itemNode);
+					goto restarting;
+				}
+				else if(restart == 'q' || restart == 'Q'){
+					FreeWormList(wormTailNode);
+					FreeItemList(itemNode);
+					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
+					printf("프로그램을 종료합니다");
+					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
+					system("pause");
+					return 0;
+				}
 			}
 		}
+
+		
 
 		//아이템을 생성
 		while (itemCounter < ITEM_MAX)
