@@ -4,7 +4,7 @@
 #include <time.h>	//랜덤 시드용 time 함수 헤더
 #include <conio.h>	//gotoxy에서 사용할 api 헤더
 
-#define FIELD_WIDTH 50	//필드가로길이
+#define FIELD_WIDTH 70	//필드가로길이
 #define FIELD_HEIGHT 25	//필드세로길이
 #define LEFT 75			//키보드 좌 화살표의 char값
 #define RIGHT 77		//키보드 우
