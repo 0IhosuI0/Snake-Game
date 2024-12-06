@@ -36,6 +36,8 @@ typedef struct _ITEM
 	int itemType;
 	int itemNo;
 	int renditem;
+	char data;
+	char ITEMt;
 	struct _ITEM* next;
 }ITEM, *pITEM;
 #pragma pack(pop)
@@ -199,8 +201,21 @@ void CreateItem(pITEM itemNode, int* itemNo) {
 	itemNode->next = newItem;
 	newItem->x = 3 + rand() % (FIELD_WIDTH - 3);
 	newItem->y = 3 + rand() % (FIELD_HEIGHT - 3);
-	newItem->renditem = rand() % 3;
+	newItem->renditem = rand() % 4;
 	newItem->itemType = ITEM_EXP;
+	if (newItem->renditem == 0)
+	{
+		newItem->ITEMt = '@';
+	}
+	else if (newItem->renditem == 1) {
+		newItem->ITEMt = '#';
+	}
+	else if (newItem->renditem == 2) {
+		newItem->ITEMt = '$';
+	}
+	else if (newItem->renditem == 3) {
+		newItem->ITEMt = '&';
+	}
 }
 
 //아이템 화면에 출력
@@ -213,13 +228,16 @@ void PrintItem(pITEM itemNode)
 		gotoxy(curr->x, curr->y);
 		if (curr->renditem == 0)
 		{
-			printf("@");
+			printf("%c", curr->ITEMt);
 		}
 		else if (curr->renditem == 1) {
-			printf("#");
+			printf("%c", curr->ITEMt);
 		}
 		else if (curr->renditem == 2) {
-			printf("$");
+			printf("%c", curr->ITEMt);
+		}
+		else if (curr->renditem == 3) {
+			printf("%c", curr->ITEMt);
 		}
 		curr = curr->next;
 	}
