@@ -137,6 +137,16 @@ void PrintScore(int score)
 	printf("종료하려면 Q를 누르세요");
 	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
+	gotoxy(FIELD_WIDTH + 3,  11);
+	printf("    //   ) )                                                  //   ) )                                     ");
+	gotoxy(FIELD_WIDTH + 3,  12);
+	printf("   ((             __        ___       / ___      ___         //            ___        _   __        ___    ");
+	gotoxy(FIELD_WIDTH + 3,  13);
+	printf("     \\        //   ) )   //   ) )   //\\ \\     //___) )     //  ____     //   ) )   // ) )  ) )   //___) ) ");
+	gotoxy(FIELD_WIDTH + 3,  14);
+	printf("       ) )    //   / /   //   / /   //  \\ \\   //           //    / /    //   / /   // / /  / /   //        ");
+	gotoxy(FIELD_WIDTH + 3,  15);
+	printf("((___ / /    //   / /   ((___( (   //    \\ \\ ((____       ((____/ /    ((___( (   // / /  / /   ((____     ");
 }
 
 //웜이 지나간 자리 지우기
