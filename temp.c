@@ -355,8 +355,10 @@ void PrintItemList(pITEM itemNode)
 */
 int main()
 {	
+	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
+	//system("mode 650");
 	//system("mode con:cols=150 lines=40");
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
+	//SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 	SetConsoleTitle("준호수의 Snake-Game");
 	
 	restarting:
