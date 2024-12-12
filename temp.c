@@ -15,7 +15,9 @@
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
 #define LEFT_MARGIN 30	//화면왼쪽마진(공백)
 #define TOP_MARGIN 10	//화면 상단마진(공백)
-#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
+//#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
+
+int DELAYTIME = 100;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -334,7 +336,7 @@ int delItemFromList(pITEM itemNode, int targetNodeNumber)
 
 //아이템(골뱅이)와 웜의 헤드가 만났는지 검사, 
 //delItemNo는 먹은 아이템을 지우는 함수로 넘겨줄 변수
-int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo)
+int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wormTailNode)
 {
 	pITEM curr;
 	int nodeNo = 0;
@@ -343,6 +345,16 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo)
 	{
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
+			if (curr->ITEMt == '@') {
+				DELAYTIME -= 10;
+			}
+			else if (curr->ITEMt == '#') {
+				DELAYTIME += 10;
+			}
+			else if (curr->ITEMt == '$') {
+				AddWorm(wormTailNode);
+			}
+
 			if (curr->itemType == ITEM_EXP)
 			{
 				*delItemNo = curr->itemNo;
@@ -517,7 +529,7 @@ int main()
 		}
 
 		//아이템 먹었는지 확인
-		if (CheckItemHit(wormHeadPointer, itemNode, &delItemNo))
+		if (CheckItemHit(wormHeadPointer, itemNode, &delItemNo, wormTailNode))
 		{
 			AddWorm(wormTailNode);
 			delItemFromList(itemNode, findItemNoInList(itemNode,delItemNo));
