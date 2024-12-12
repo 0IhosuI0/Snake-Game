@@ -13,8 +13,8 @@
 #define ITEM_MAX 2		//화면에 표시되는 아이템개수
 #define ITEM_GOLD 101	//골드 아이템 인디케이터
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
-#define LEFT_MARGIN 30	//화면왼쪽마진(공백)
-#define TOP_MARGIN 3	//화면 상단마진(공백)
+#define LEFT_MARGIN 80	//화면왼쪽마진(공백)
+#define TOP_MARGIN 10	//화면 상단마진(공백)
 #define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
 //지렁이를 구현할 이중연결리스트 구조체
@@ -51,6 +51,33 @@ void gotoxy(int x, int y)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
 }
 
+void PrintMenu() 
+{
+	for (int i = 1; i < FIELD_WIDTH; i++)
+	{
+		gotoxy(i, 0);
+		printf("■");
+		gotoxy(i, FIELD_HEIGHT);
+		printf("■");
+	}
+
+	for (int i = 1; i < FIELD_HEIGHT; i++)
+	{
+		gotoxy(0, i);
+		printf("■");
+		gotoxy(FIELD_WIDTH,i);
+		printf("■");
+	}
+	gotoxy(0, 0);
+	printf("■");
+	gotoxy(0, FIELD_HEIGHT);
+	printf("■");
+	gotoxy(FIELD_WIDTH, 0);
+	printf("■");
+	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
+	printf("■");
+}
+
 //게임영역출력
 void PrintField() 
 {
@@ -64,6 +91,7 @@ void PrintField()
 
 	for (int i = 1; i < FIELD_HEIGHT; i++)
 	{
+		
 		gotoxy(0, i);
 		printf("│");
 		gotoxy(FIELD_WIDTH,i);
@@ -137,16 +165,7 @@ void PrintScore(int score)
 	printf("종료하려면 Q를 누르세요");
 	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
-	gotoxy(FIELD_WIDTH + 3,  11);
-	printf("    //   ) )                                                  //   ) )                                     ");
-	gotoxy(FIELD_WIDTH + 3,  12);
-	printf("   ((             __        ___       / ___      ___         //            ___        _   __        ___    ");
-	gotoxy(FIELD_WIDTH + 3,  13);
-	printf("     \\        //   ) )   //   ) )   //\\ \\     //___) )     //  ____     //   ) )   // ) )  ) )   //___) ) ");
-	gotoxy(FIELD_WIDTH + 3,  14);
-	printf("       ) )    //   / /   //   / /   //  \\ \\   //           //    / /    //   / /   // / /  / /   //        ");
-	gotoxy(FIELD_WIDTH + 3,  15);
-	printf("((___ / /    //   / /   ((___( (   //    \\ \\ ((____       ((____/ /    ((___( (   // / /  / /   ((____     ");
+
 }
 
 //웜이 지나간 자리 지우기
