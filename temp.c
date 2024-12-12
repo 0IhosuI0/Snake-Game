@@ -247,7 +247,7 @@ void PrintScore(int score)
 	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
 	gotoxy(FIELD_WIDTH + 3,  11);
-	printf("현재 속도 : %d%%", );
+	printf("현재 속도 : %d%%", DELAYTIME);
 }
 
 //웜이 지나간 자리 지우기
