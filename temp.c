@@ -356,30 +356,21 @@ void FreeWormList(pWORM wormTailNode)
 	}
 }
 
-void FreeWormTail(pWORM wormTailNode)
-{
-	pWORM curr;
-
-	curr = wormTailNode;
-
-	while (curr->next != NULL) {
-		curr = curr->next;
-	}
-	free(curr);
-
-}
 
 void CleanTail(pWORM wormTailNode)
 {
 	pWORM curr;
+	curr = wormTailNode->next;
 
-	curr = wormTailNode;
-
-	/*while (curr->next != NULL) {
-		curr = curr->next;
-	}*/
-	gotoxy(curr->next->x, curr->next->y);
+	gotoxy(curr->x, curr->y);
 	printf(" ");
+
+
+	curr->next->before = curr->before;
+	curr->before->next = curr->next;
+
+	free(curr);
+
 }
 
 //item 발생시키기
@@ -506,7 +497,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 				AddWorm(wormTailNode);
 			}
 			else if (curr->ITEMt == '&') {
-				//CleanTail(wormTailNode);
+				CleanTail(wormTailNode);
 			}
 
 			if (curr->itemType == ITEM_EXP)
@@ -608,15 +599,15 @@ int Load(){
 	FILE * fp = fopen("Save.sv", "rt");
 	if (fp == NULL) return -1;
 
-	if (fscanf(fp, "%d", &score) != 1) {
+	if (fscanf_s(fp, "%d", &score) != 1) {
         score = 0; // 읽기 실패 시 기본값 설정
     }
 
-    if (fscanf(fp, "%d", &DELAYTIME) != 1) {
+    if (fscanf_s(fp, "%d", &DELAYTIME) != 1) {
         DELAYTIME = 100; // 읽기 실패 시 기본값
     }
 
-    if (fscanf(fp, "%d", &NowSpeed) != 1) {
+    if (fscanf_s(fp, "%d", &NowSpeed) != 1) {
         NowSpeed = 100; // 읽기 실패 시 기본값
     }
     
@@ -698,7 +689,6 @@ int main()
 
 			if (GetAsyncKeyState(0x51))
 			{
-				printf("%c", key);
 				break;
 			}
 			if (GetAsyncKeyState(0x4F)) {
