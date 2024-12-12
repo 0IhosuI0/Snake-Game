@@ -55,27 +55,38 @@ void PrintMenu()
 {
 	for (int i = 1; i < FIELD_WIDTH; i++)
 	{
-		gotoxy(i, 0);
+		gotoxy(i, 20);
 		printf("■");
-		gotoxy(i, FIELD_HEIGHT);
+		gotoxy(i, FIELD_HEIGHT + 20);
 		printf("■");
 	}
 
-	for (int i = 1; i < FIELD_HEIGHT; i++)
+	for (int i = 20; i < FIELD_HEIGHT + 20; i++)
 	{
 		gotoxy(0, i);
 		printf("■");
 		gotoxy(FIELD_WIDTH,i);
 		printf("■");
 	}
-	gotoxy(0, 0);
+	gotoxy(0, 20);
 	printf("■");
-	gotoxy(0, FIELD_HEIGHT);
+	gotoxy(0, FIELD_HEIGHT + 20);
 	printf("■");
-	gotoxy(FIELD_WIDTH, 0);
+	gotoxy(FIELD_WIDTH, 20);
 	printf("■");
-	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
+	gotoxy(FIELD_WIDTH, FIELD_HEIGHT + 20);
 	printf("■");
+	gotoxy(FIELD_WIDTH,  0);
+	printf("    //   ) )                                                  //   ) )                                     ");
+	gotoxy(FIELD_WIDTH,  1);
+	printf("   ((             __        ___       / ___      ___         //            ___        _   __        ___    ");
+	gotoxy(FIELD_WIDTH,  2);
+	printf("     \\        //   ) )   //   ) )   //\\ \\     //___) )     //  ____     //   ) )   // ) )  ) )   //___) ) ");
+	gotoxy(FIELD_WIDTH,  3);
+	printf("       ) )    //   / /   //   / /   //  \\ \\   //           //    / /    //   / /   // / /  / /   //        ");
+	gotoxy(FIELD_WIDTH,  4);
+	printf("((___ / /    //   / /   ((___( (   //    \\ \\ ((____       ((____/ /    ((___( (   // / /  / /   ((____     ");
+	
 }
 
 //게임영역출력
@@ -417,7 +428,7 @@ int main()
 	srand((unsigned int)time(NULL));
 	
 	system("cls");	//화면지우고
-	PrintField();	//필드 출력
+	PrintMenu();	//필드 출력
 
 
 	while (1)
