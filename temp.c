@@ -29,7 +29,7 @@ typedef struct _WORM
 	int x;	//x좌표
 	int y;	//y좌표
 	char direction;	//진행방향
-	struct _WORM *next;	//다음노드주소
+	struct _WORM *next;	// 다음노드주소
 	struct _WORM *before;//이전노드주소
 }WORM, *pWORM;
 
@@ -47,6 +47,13 @@ typedef struct _ITEM
 }ITEM, *pITEM;
 #pragma pack(pop)
 
+void DeleteCursor(){
+	CONSOLE_CURSOR_INFO infocursor = {0, };
+	infocursor.dwSize = 1;
+	infocursor.bVisible = 0;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &infocursor);
+}
+
 //커서를 일정 좌표로 이동
 void gotoxy(int x, int y)
 {
@@ -59,6 +66,36 @@ void gotoxy(int x, int y)
 void SetColor(int num){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), num);
 }
+
+//게임영역출력
+void PrintField() 
+{
+	for (int i = 1; i < FIELD_WIDTH; i++)
+	{
+		gotoxy(i, 0);
+		printf("─");
+		gotoxy(i, FIELD_HEIGHT);
+		printf("─");
+	}
+
+	for (int i = 1; i < FIELD_HEIGHT; i++)
+	{
+		
+		gotoxy(0, i);
+		printf("│");
+		gotoxy(FIELD_WIDTH,i);
+		printf("│");
+	}
+	gotoxy(0, 0);
+	printf("┌");
+	gotoxy(0, FIELD_HEIGHT);
+	printf("└");
+	gotoxy(FIELD_WIDTH, 0);
+	printf("┐");
+	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
+	printf("┘");
+}
+
 void PrintMenu() 
 {
 	for (int i = 13; i < MENU_WIDTH; i++)
@@ -103,35 +140,6 @@ void PrintMenu()
 	printf("게임  설명");
 	gotoxy(45, 35);
 	printf("종료  하기");
-}
-
-//게임영역출력
-void PrintField() 
-{
-	for (int i = 1; i < FIELD_WIDTH; i++)
-	{
-		gotoxy(i, 0);
-		printf("─");
-		gotoxy(i, FIELD_HEIGHT);
-		printf("─");
-	}
-
-	for (int i = 1; i < FIELD_HEIGHT; i++)
-	{
-		
-		gotoxy(0, i);
-		printf("│");
-		gotoxy(FIELD_WIDTH,i);
-		printf("│");
-	}
-	gotoxy(0, 0);
-	printf("┌");
-	gotoxy(0, FIELD_HEIGHT);
-	printf("└");
-	gotoxy(FIELD_WIDTH, 0);
-	printf("┐");
-	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
-	printf("┘");
 }
 
 int SelectMenu(){
@@ -189,6 +197,51 @@ int SelectMenu(){
 		Sleep(DELAYTIME);
 	}
 }
+void PrintGuide() 
+{
+	for (int i = 1; i < MENU_WIDTH; i++)
+	{
+		gotoxy(i, 1);
+		printf("■");
+		gotoxy(i, MENU_HEIGHT);
+		printf("■");
+	}
+
+	for (int i = 1	; i < MENU_HEIGHT; i++)
+	{
+		gotoxy(1, i);
+		printf("■");
+		gotoxy(MENU_WIDTH, i);
+		printf("■");
+	}
+	gotoxy(1, 1);
+	printf("■");
+	gotoxy(1, MENU_HEIGHT);
+	printf("■");
+	gotoxy(MENU_WIDTH, 1);
+	printf("■");
+	gotoxy(MENU_WIDTH, MENU_HEIGHT);
+	printf("■");
+	
+	gotoxy(35, 4);
+	printf("<게임 규칙>");
+	gotoxy(10, 9);
+	printf("1. 조작은 방향키(←, →, ↑, ↓)로 한다.");
+	gotoxy(10, 17);
+	printf("2. 아이템 설명");
+	gotoxy(15, 19);
+	printf("@ : 속도 증가");
+	gotoxy(15, 21);
+	printf("# : 속도 감소");
+	gotoxy(15, 23);
+	printf("$ : 꼬리 2개 증가");
+	gotoxy(15, 25);
+	printf("& : 꼬리 1개 감소");
+	gotoxy(MENU_WIDTH - 15, MENU_HEIGHT - 3);
+	SetColor(11);
+	printf("규칙 닫기");
+}
+
 //지렁이를 늘리는 함수(이중연결리스트의 테일쪽에 노드 추가)
 void AddWorm(pWORM wormTailNode)
 {
@@ -501,6 +554,10 @@ int main()
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	SetConsoleTitle("준호수의 Snake-Game");
 	
+	DeleteCursor();
+	
+	menu:
+
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
 	int Select = SelectMenu();
@@ -650,6 +707,17 @@ int main()
 		system("cls");
 		return 0;
 	}
+	else if(Select == 2){
+		system("cls");
+		PrintGuide();
+		while(1){
+			if(GetAsyncKeyState(VK_RETURN)){
+				getchar();
+				break;
+			}
+		}
+		goto menu;
+	}	
 	else if(Select == 3){
 		//FreeWormList(wormTailNode);
 		//FreeItemList(itemNode);
