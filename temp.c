@@ -488,16 +488,25 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 			if (curr->ITEMt == '@') {
 				NowSpeed += 10;
 				DELAYTIME -= 10;
+				gotoxy(FIELD_WIDTH + 3,  15);
+				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
+
 			}
 			else if (curr->ITEMt == '#') {
 				NowSpeed -= 10;
 				DELAYTIME += 10;
+				gotoxy(FIELD_WIDTH + 3,  15);
+				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
+				gotoxy(FIELD_WIDTH + 3,  15);
+				printf("[$] 을(를) 섭취하고 꼬리가 2개 증가하였습니다.    ");
 			}
 			else if (curr->ITEMt == '&') {
 				CleanTail(wormTailNode);
+				gotoxy(FIELD_WIDTH + 3,  15);
+				printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.    ");
 			}
 
 			if (curr->itemType == ITEM_EXP)
