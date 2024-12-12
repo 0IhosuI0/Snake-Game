@@ -536,6 +536,46 @@ void FreeItemList(pITEM itemNode)
 	}
 }
 
+int SelRestart(){
+	int Restart = 0;
+	system("color 0F");
+	while(1){
+		if(GetAsyncKeyState(VK_UP)){
+			if(Restart == 0) Restart = 1;
+			else Restart--;
+		}
+		else if(GetAsyncKeyState(VK_DOWN)){
+			if(Restart == 1) Restart = 0;
+			else Restart ++;
+		}
+		else if(GetAsyncKeyState(VK_RETURN)){
+			getchar();
+			return Restart;
+		}
+		switch (Restart) {
+			case 0: 
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				SetColor(11);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				SetColor(15); 
+				printf("게임  종료");
+				break;
+			case 1:
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				SetColor(11);
+				printf("게임  종료");
+				SetColor(15); 
+				break;
+			default: 
+				break;
+		}
+		Sleep(DELAYTIME);
+	}
+}	
+
 //실행시 테스트용으로 만들어 놓은 아이템 생성 리스트 출력함수
 /* 
 void PrintItemList(pITEM itemNode)
@@ -556,7 +596,7 @@ int main()
 	SetConsoleTitle("준호수의 Snake-Game");
 	
 	DeleteCursor();
-	int Select;
+	int Select, Restart;
 	
 	menu:
 
@@ -569,7 +609,7 @@ int main()
 		pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
 		pWORM addWorm = malloc(sizeof(WORM));//첫번째 웜몸통
 		pITEM itemNode = malloc(sizeof(ITEM));//아이템용 단일 연결리스트
-		char restart = 0;
+		
 
 		wormHeadNode->next = NULL;
 		wormHeadNode->before = addWorm;
@@ -653,28 +693,29 @@ int main()
 			//벽에 부딛히면 게임오버
 			if (wormHeadPointer->x == 0 || wormHeadPointer->x == FIELD_WIDTH || wormHeadPointer->y == 0 || wormHeadPointer->y == FIELD_HEIGHT)
 			{
-				while(restart != 'r' && restart != 'R' && restart != 'q' && restart != 'Q'){
-					system("cls");
-					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
-					printf("벽에 부딛혔습니다. GAME OVER");
-					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
-					printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
-					scanf_s("%c", &restart);
-					if(restart == 'r' || restart == 'R'){
-						getchar();
+				system("cls");
+				gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
+				printf("벽에 부딛혔습니다. GAME OVER");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				printf("게임  종료");
+				Restart = SelRestart();
+
+				switch(Restart){
+					case 0:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
 						goto restarting;
-					}
-					else if(restart == 'q' || restart == 'Q'){
+					
+					case 1:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
-						gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
+						gotoxy(FIELD_WIDTH / 2 - 8 , FIELD_HEIGHT / 2 + 8);
 						printf("프로그램을 종료합니다");
-						gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
+						gotoxy(FIELD_WIDTH / 2 - 13 , FIELD_HEIGHT / 2 + 9);
 						system("pause");
 						return 0;
-					}
 				}
 			}
 
