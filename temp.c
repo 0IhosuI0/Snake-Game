@@ -296,7 +296,7 @@ void PrintScore(int score)
 	gotoxy(FIELD_WIDTH + 3,  3);
 	printf("점수 : %d점",score);
 	gotoxy(FIELD_WIDTH + 3, 5); 
-	printf("일시정지하려면 S를 누르세요");
+	printf("일시정지하려면 O를 누르세요");
 	gotoxy(FIELD_WIDTH + 3,  7);
 	printf("종료하려면 Q를 누르세요");
 	gotoxy(FIELD_WIDTH + 3,  9);
@@ -590,13 +590,49 @@ void PrintItemList(pITEM itemNode)
 	}
 }
 */
+
+void Save(int score) {
+	char fileName[50] = { 0 };
+	FILE * fp = fopen("Save.sv", "wt");
+
+	fprintf(fp, "%d\n", score);
+	fprintf(fp, "%d\n", DELAYTIME);
+	fprintf(fp, "%d", NowSpeed);
+
+	fclose(fp);
+	gotoxy(FIELD_WIDTH / 2 - 10, 7); 
+	printf("저장 완료");
+}
+
+int Load(){
+	int score = 0;
+	char fileName[50] = { 0 };
+	FILE * fp = fopen("Save.sv", "rt");
+	if (fp == NULL) return 0;
+
+	if (fscanf(fp, "%d", &score) != 1) {
+        score = 0; // 읽기 실패 시 기본값 설정
+    }
+
+    if (fscanf(fp, "%d", &DELAYTIME) != 1) {
+        DELAYTIME = 100; // 읽기 실패 시 기본값
+    }
+
+    if (fscanf(fp, "%d", &NowSpeed) != 1) {
+        NowSpeed = 100; // 읽기 실패 시 기본값
+    }
+    
+	fclose(fp);
+	return score;
+}
+
 int main()
 {	
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	SetConsoleTitle("준호수의 Snake-Game");
 	
 	DeleteCursor();
-	int Select, Restart;
+	int Select, Restart, score = 0;
 	
 	menu:
 
@@ -604,7 +640,7 @@ int main()
 	PrintMenu();	//필드 출력
 	Select = SelectMenu();
 	if(Select == 0){
-		restarting:
+		starting:
 		pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
 		pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
 		pWORM addWorm = malloc(sizeof(WORM));//첫번째 웜몸통
@@ -633,7 +669,7 @@ int main()
 		//웜의 머리를 가리키는 포인터
 		pWORM wormHeadPointer = addWorm;
 
-		int score = 0;			//최초점수
+	
 		int itemCounter = 0;	//아이템 생성 한도 카운터
 		char key;				//키입력받을 변수
 		int delItemNo=0;		//지울아이템넘버를 받을 변수초기화
@@ -641,7 +677,7 @@ int main()
 
 		//아이템 생성 위치 난수 시드
 		srand((unsigned int)time(NULL));
-		
+
 		while (1)
 		{
 			//테스트용 출력부분
@@ -658,13 +694,17 @@ int main()
 					printf("%c", key);
 					break;
 				}
-				if (key == 's' || key == 'S') {
+				if (key == 'o' || key == 'O') {
 					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
 					printf("일시정지 상태!\n");
 					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
 					system("pause");
 					system("cls");
 					PrintField();
+				}
+				if (key == 'v' || key == 'V'){
+					Save(score);
+					break;
 				}
 				if (key == LEFT && wormHeadPointer->direction != RIGHT)
 				{
@@ -706,7 +746,7 @@ int main()
 					case 0:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
-						goto restarting;
+						goto starting;
 					
 					case 1:
 						FreeWormList(wormTailNode);
@@ -749,6 +789,10 @@ int main()
 		system("pause");
 		system("cls");
 		return 0;
+	}
+	else if(Select == 1){
+		score = Load();
+		goto starting;
 	}
 	else if(Select == 2){
 		system("cls");
