@@ -12,7 +12,7 @@
 #define RIGHT 77		//키보드 우
 #define UP 72			//키보드 위
 #define DOWN 80			//지보드 아래
-#define ITEM_MAX 2		//화면에 표시되는 아이템개수
+#define ITEM_MAX 10		//화면에 표시되는 아이템개수
 #define ITEM_GOLD 101	//골드 아이템 인디케이터
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
 #define LEFT_MARGIN 30	//화면왼쪽마진(공백)
@@ -22,6 +22,7 @@
 int DELAYTIME = 100;
 int NowSpeed = 100;
 int Select = 0;
+int cntTail = 9;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -294,14 +295,14 @@ void PrintScore(int score)
 {
 	gotoxy(FIELD_WIDTH + 3,  3);
 	printf("점수 : %d점",score);
-	gotoxy(FIELD_WIDTH + 3, 5); 
-	printf("일시정지하려면 O를 누르세요");
+	gotoxy(FIELD_WIDTH + 3,  5);
+	printf("꼬리 개수 : %3d개", cntTail);
 	gotoxy(FIELD_WIDTH + 3,  7);
-	printf("종료하려면 Q를 누르세요");
-	gotoxy(FIELD_WIDTH + 3,  9);
-	printf("조작은 화살표키로");
-	gotoxy(FIELD_WIDTH + 3,  11);
 	printf("현재 속도 : %3d%%", NowSpeed);
+	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 2); 
+	printf("일시정지하려면 O를 누르세요");
+	gotoxy(FIELD_WIDTH + 3,  FIELD_HEIGHT - 3);
+	printf("종료하려면 Q를 누르세요");
 }
 
 //웜이 지나간 자리 지우기
@@ -488,24 +489,29 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 			if (curr->ITEMt == '@') {
 				NowSpeed += 10;
 				DELAYTIME -= 10;
-				gotoxy(FIELD_WIDTH + 3,  15);
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
 				NowSpeed -= 10;
 				DELAYTIME += 10;
-				gotoxy(FIELD_WIDTH + 3,  15);
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
-				gotoxy(FIELD_WIDTH + 3,  15);
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[$] 을(를) 섭취하고 꼬리가 2개 증가하였습니다.    ");
 			}
 			else if (curr->ITEMt == '&') {
 				CleanTail(wormTailNode);
-				gotoxy(FIELD_WIDTH + 3,  15);
+				CleanTail(wormTailNode);
+				cntTail --;
+				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.    ");
 			}
 
@@ -595,7 +601,8 @@ void Save(int score) {
 
 	fprintf(fp, "%d\n", score);
 	fprintf(fp, "%d\n", DELAYTIME);
-	fprintf(fp, "%d", NowSpeed);
+	fprintf(fp, "%d\n", NowSpeed);
+	fprintf(fp, "%d", cntTail);
 
 	fclose(fp);
 	gotoxy(FIELD_WIDTH / 2 - 10, 7); 
@@ -617,6 +624,9 @@ int Load(){
     }
 
     if (fscanf_s(fp, "%d", &NowSpeed) != 1) {
+        NowSpeed = 100; // 읽기 실패 시 기본값
+    }
+	if (fscanf_s(fp, "%d", &cntTail) != 1) {
         NowSpeed = 100; // 읽기 실패 시 기본값
     }
     
@@ -674,9 +684,9 @@ int main()
 		system("cls");
 		PrintField();
 		//지렁이 게임시작 지렁이 생성
-		for(int i = 9; i>0 ; i--)
+		for(int i = cntTail; i>0 ; i--)
 			AddWorm(wormTailNode);
-		
+
 		//웜의 머리를 가리키는 포인터
 		pWORM wormHeadPointer = addWorm;
 
@@ -755,6 +765,7 @@ int main()
 						score = 0;
 						DELAYTIME = 100;
 						NowSpeed = 100;
+						cntTail = 9;
 						goto starting;
 					
 					case 1:
