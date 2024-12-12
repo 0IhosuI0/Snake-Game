@@ -20,6 +20,7 @@
 //#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
 int DELAYTIME = 100;
+int NowSpeed = 100;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -247,7 +248,7 @@ void PrintScore(int score)
 	gotoxy(FIELD_WIDTH + 3,  9);
 	printf("조작은 화살표키로");
 	gotoxy(FIELD_WIDTH + 3,  11);
-	printf("현재 속도 : %d%%", DELAYTIME);
+	printf("현재 속도 : %3d%%", NowSpeed);
 }
 
 //웜이 지나간 자리 지우기
@@ -300,6 +301,32 @@ void FreeWormList(pWORM wormTailNode)
 		free(curr);
 		curr = temp;
 	}
+}
+
+void FreeWormTail(pWORM wormTailNode)
+{
+	pWORM curr;
+
+	curr = wormTailNode;
+
+	while (curr->next != NULL) {
+		curr = curr->next;
+	}
+	free(curr);
+
+}
+
+void CleanTail(pWORM wormTailNode)
+{
+	pWORM curr;
+
+	curr = wormTailNode;
+
+	/*while (curr->next != NULL) {
+		curr = curr->next;
+	}*/
+	gotoxy(curr->next->x, curr->next->y);
+	printf(" ");
 }
 
 //item 발생시키기
@@ -415,13 +442,18 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
 			if (curr->ITEMt == '@') {
+				NowSpeed += 10;
 				DELAYTIME -= 10;
 			}
 			else if (curr->ITEMt == '#') {
+				NowSpeed -= 10;
 				DELAYTIME += 10;
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
+			}
+			else if (curr->ITEMt == '&') {
+				//CleanTail(wormTailNode);
 			}
 
 			if (curr->itemType == ITEM_EXP)
