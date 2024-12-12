@@ -240,6 +240,7 @@ void PrintGuide()
 	gotoxy(MENU_WIDTH - 15, MENU_HEIGHT - 3);
 	SetColor(11);
 	printf("규칙 닫기");
+	SetColor(15);
 }
 
 //지렁이를 늘리는 함수(이중연결리스트의 테일쪽에 노드 추가)
