@@ -21,6 +21,7 @@
 
 int DELAYTIME = 100;
 int NowSpeed = 100;
+int Select = 0;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -143,7 +144,6 @@ void PrintMenu()
 }
 
 int SelectMenu(){
-	int Select = 0;
 	system("color 0F");
 	while(1){
 		if(GetAsyncKeyState(VK_UP)){
@@ -155,7 +155,6 @@ int SelectMenu(){
 			else Select ++;
 		}
 		else if(GetAsyncKeyState(VK_RETURN)){
-			//getchar();
 			return Select;
 		}
 		switch (Select) {
@@ -537,7 +536,7 @@ void FreeItemList(pITEM itemNode)
 }
 
 int SelRestart(){
-	int Restart = 0;
+	int Restart = 0  ;
 	system("color 0F");
 	while(1){
 		if(GetAsyncKeyState(VK_UP)){
@@ -549,7 +548,6 @@ int SelRestart(){
 			else Restart ++;
 		}
 		else if(GetAsyncKeyState(VK_RETURN)){
-			//getchar();
 			return Restart;
 		}
 		switch (Restart) {
@@ -627,10 +625,12 @@ int Load(){
 }
 
 int PrintLoadErr(){
+	gotoxy(39, 25);
+	SetColor(11);
 	printf("저장된 데이터가 없습니다!");
+	SetColor(15);
 	while(1){
 		if(GetAsyncKeyState(VK_RETURN)){
-			//getchar();
 			return 0;
 		}
 	}
@@ -650,7 +650,6 @@ int main()
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
 	Select = SelectMenu();
-	while(getchar() != '\n');
 	if(Select == 0){
 		starting:
 		pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
@@ -697,44 +696,40 @@ int main()
 			//printf("먹은 아이템 : %d\n",delItemNo);
 			//PrintItemList(itemNode);
 
-			if (_kbhit() != 0)
+			if (GetAsyncKeyState(0x51))
 			{
-				
-				key = _getch();
-				if (key == 'q' || key == 'Q')
-				{
-					printf("%c", key);
-					break;
-				}
-				if (key == 'o' || key == 'O') {
-					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
-					printf("일시정지 상태!\n");
-					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
-					system("pause");
-					system("cls");
-					PrintField();
-				}
-				if (key == 'v' || key == 'V'){
-					Save(score);
-					break;
-				}
-				if (key == LEFT && wormHeadPointer->direction != RIGHT)
-				{
-					wormHeadPointer->direction = LEFT;
-				}
-				else if (key == RIGHT && wormHeadPointer->direction != LEFT)
-				{
-					wormHeadPointer->direction = RIGHT;
-				}
-				else if (key == UP && wormHeadPointer->direction != DOWN)
-				{
-					wormHeadPointer->direction = UP;
-				}
-				else if (key == DOWN && wormHeadPointer->direction != UP)
-				{
-					wormHeadPointer->direction = DOWN;
-				}
+				printf("%c", key);
+				break;
 			}
+			if (GetAsyncKeyState(0x4F)) {
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
+				printf("일시정지 상태!\n");
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
+				system("pause");
+				system("cls");
+				PrintField();
+			}
+			if (GetAsyncKeyState(0x56)){
+				Save(score);
+				break;
+			}
+			if (GetAsyncKeyState(VK_LEFT) && wormHeadPointer->direction != RIGHT)
+			{
+				wormHeadPointer->direction = LEFT;
+			}
+			else if (GetAsyncKeyState(VK_RIGHT) && wormHeadPointer->direction != LEFT)
+			{
+				wormHeadPointer->direction = RIGHT;
+			}
+			else if (GetAsyncKeyState(VK_UP) && wormHeadPointer->direction != DOWN)
+			{
+				wormHeadPointer->direction = UP;
+			}
+			else if (GetAsyncKeyState(VK_DOWN) && wormHeadPointer->direction != UP)
+			{
+				wormHeadPointer->direction = DOWN;
+			}
+			
 			
 			//웜 지나간 자리 지우기
 			ClearWorm(wormTailNode->next->x, wormTailNode->next->y);
@@ -807,14 +802,12 @@ int main()
 	}
 
 	else if(Select == 1){
-			if(Load() == -1){
-				PrintLoadErr();
-				goto menu;
-			}
+			if(Load() == -1) PrintLoadErr();
 			else {
 				score = Load();
 				goto starting;
 			}
+			goto menu;
 			
 		}
 		
@@ -822,10 +815,7 @@ int main()
 		system("cls");
 		PrintGuide();
 		while(1){
-			if(GetAsyncKeyState(VK_RETURN)){
-				//getchar();
-				break;
-			}
+			if(GetAsyncKeyState(VK_RETURN)) break;
 		}
 		goto menu;
 	}	
