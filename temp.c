@@ -13,7 +13,7 @@
 #define ITEM_MAX 2		//화면에 표시되는 아이템개수
 #define ITEM_GOLD 101	//골드 아이템 인디케이터
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
-#define LEFT_MARGIN 80	//화면왼쪽마진(공백)
+#define LEFT_MARGIN 30	//화면왼쪽마진(공백)
 #define TOP_MARGIN 10	//화면 상단마진(공백)
 #define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
@@ -428,7 +428,7 @@ int main()
 	srand((unsigned int)time(NULL));
 	
 	system("cls");	//화면지우고
-	PrintMenu();	//필드 출력
+	PrintField();	//필드 출력
 
 
 	while (1)
@@ -532,9 +532,10 @@ int main()
 
 	FreeWormList(wormTailNode);
 	FreeItemList(itemNode);
-	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
+	gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
 	printf("프로그램을 종료합니다");
-	gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
+	gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2 + 1);
 	system("pause");
+	system("cls");
 	return 0;
 }
