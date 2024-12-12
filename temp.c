@@ -76,15 +76,15 @@ void PrintMenu()
 	printf("бс");
 	gotoxy(FIELD_WIDTH, FIELD_HEIGHT + 20);
 	printf("бс");
-	gotoxy(FIELD_WIDTH,  0);
+	gotoxy(FIELD_WIDTH / 2,  0);
 	printf("    //   ) )                                                  //   ) )                                     ");
-	gotoxy(FIELD_WIDTH,  1);
+	gotoxy(FIELD_WIDTH / 2,  1);
 	printf("   ((             __        ___       / ___      ___         //            ___        _   __        ___    ");
-	gotoxy(FIELD_WIDTH,  2);
+	gotoxy(FIELD_WIDTH / 2,  2);
 	printf("     \\        //   ) )   //   ) )   //\\ \\     //___) )     //  ____     //   ) )   // ) )  ) )   //___) ) ");
-	gotoxy(FIELD_WIDTH,  3);
+	gotoxy(FIELD_WIDTH / 2,  3);
 	printf("       ) )    //   / /   //   / /   //  \\ \\   //           //    / /    //   / /   // / /  / /   //        ");
-	gotoxy(FIELD_WIDTH,  4);
+	gotoxy(FIELD_WIDTH / 2,  4);
 	printf("((___ / /    //   / /   ((___( (   //    \\ \\ ((____       ((____/ /    ((___( (   // / /  / /   ((____     ");
 	
 }
