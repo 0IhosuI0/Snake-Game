@@ -155,7 +155,7 @@ int SelectMenu(){
 			else Select ++;
 		}
 		else if(GetAsyncKeyState(VK_RETURN)){
-			getchar();
+			//getchar();
 			return Select;
 		}
 		switch (Select) {
@@ -549,7 +549,7 @@ int SelRestart(){
 			else Restart ++;
 		}
 		else if(GetAsyncKeyState(VK_RETURN)){
-			getchar();
+			//getchar();
 			return Restart;
 		}
 		switch (Restart) {
@@ -608,7 +608,7 @@ int Load(){
 	int score = 0;
 	char fileName[50] = { 0 };
 	FILE * fp = fopen("Save.sv", "rt");
-	if (fp == NULL) return 0;
+	if (fp == NULL) return -1;
 
 	if (fscanf(fp, "%d", &score) != 1) {
         score = 0; // 읽기 실패 시 기본값 설정
@@ -626,6 +626,17 @@ int Load(){
 	return score;
 }
 
+int PrintLoadErr(){
+	printf("저장된 데이터가 없습니다!");
+	while(1){
+		if(GetAsyncKeyState(VK_RETURN)){
+			//getchar();
+			return 0;
+		}
+	}
+}
+
+
 int main()
 {	
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
@@ -635,10 +646,11 @@ int main()
 	int Select, Restart, score = 0;
 	
 	menu:
-
+	
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
 	Select = SelectMenu();
+	while(getchar() != '\n');
 	if(Select == 0){
 		starting:
 		pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
@@ -746,6 +758,9 @@ int main()
 					case 0:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
+						score = 0;
+						DELAYTIME = 100;
+						NowSpeed = 100;
 						goto starting;
 					
 					case 1:
@@ -790,16 +805,25 @@ int main()
 		system("cls");
 		return 0;
 	}
+
 	else if(Select == 1){
-		score = Load();
-		goto starting;
-	}
+			if(Load() == -1){
+				PrintLoadErr();
+				goto menu;
+			}
+			else {
+				score = Load();
+				goto starting;
+			}
+			
+		}
+		
 	else if(Select == 2){
 		system("cls");
 		PrintGuide();
 		while(1){
 			if(GetAsyncKeyState(VK_RETURN)){
-				getchar();
+				//getchar();
 				break;
 			}
 		}
