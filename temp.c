@@ -555,12 +555,13 @@ int main()
 	SetConsoleTitle("준호수의 Snake-Game");
 	
 	DeleteCursor();
+	int Select;
 	
 	menu:
 
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
-	int Select = SelectMenu();
+	Select = SelectMenu();
 	if(Select == 0){
 		restarting:
 		pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
