@@ -12,7 +12,7 @@
 #define RIGHT 77		//키보드 우
 #define UP 72			//키보드 위
 #define DOWN 80			//지보드 아래
-#define ITEM_MAX 2		//화면에 표시되는 아이템개수
+#define ITEM_MAX 10		//화면에 표시되는 아이템개수
 #define ITEM_GOLD 101	//골드 아이템 인디케이터
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
 #define LEFT_MARGIN 30	//화면왼쪽마진(공백)
@@ -20,6 +20,9 @@
 //#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
 int DELAYTIME = 100;
+int NowSpeed = 100;
+int Select = 0;
+int cntTail = 9;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -28,7 +31,7 @@ typedef struct _WORM
 	int x;	//x좌표
 	int y;	//y좌표
 	char direction;	//진행방향
-	struct _WORM *next;	//다음노드주소
+	struct _WORM *next;	// 다음노드주소
 	struct _WORM *before;//이전노드주소
 }WORM, *pWORM;
 
@@ -46,6 +49,13 @@ typedef struct _ITEM
 }ITEM, *pITEM;
 #pragma pack(pop)
 
+void DeleteCursor(){
+	CONSOLE_CURSOR_INFO infocursor = {0, };
+	infocursor.dwSize = 1;
+	infocursor.bVisible = 0;
+    SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &infocursor);
+}
+
 //커서를 일정 좌표로 이동
 void gotoxy(int x, int y)
 {
@@ -58,6 +68,36 @@ void gotoxy(int x, int y)
 void SetColor(int num){
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), num);
 }
+
+//게임영역출력
+void PrintField() 
+{
+	for (int i = 1; i < FIELD_WIDTH; i++)
+	{
+		gotoxy(i, 0);
+		printf("─");
+		gotoxy(i, FIELD_HEIGHT);
+		printf("─");
+	}
+
+	for (int i = 1; i < FIELD_HEIGHT; i++)
+	{
+		
+		gotoxy(0, i);
+		printf("│");
+		gotoxy(FIELD_WIDTH,i);
+		printf("│");
+	}
+	gotoxy(0, 0);
+	printf("┌");
+	gotoxy(0, FIELD_HEIGHT);
+	printf("└");
+	gotoxy(FIELD_WIDTH, 0);
+	printf("┐");
+	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
+	printf("┘");
+}
+
 void PrintMenu() 
 {
 	for (int i = 13; i < MENU_WIDTH; i++)
@@ -104,37 +144,7 @@ void PrintMenu()
 	printf("종료  하기");
 }
 
-//게임영역출력
-void PrintField() 
-{
-	for (int i = 1; i < FIELD_WIDTH; i++)
-	{
-		gotoxy(i, 0);
-		printf("─");
-		gotoxy(i, FIELD_HEIGHT);
-		printf("─");
-	}
-
-	for (int i = 1; i < FIELD_HEIGHT; i++)
-	{
-		
-		gotoxy(0, i);
-		printf("│");
-		gotoxy(FIELD_WIDTH,i);
-		printf("│");
-	}
-	gotoxy(0, 0);
-	printf("┌");
-	gotoxy(0, FIELD_HEIGHT);
-	printf("└");
-	gotoxy(FIELD_WIDTH, 0);
-	printf("┐");
-	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
-	printf("┘");
-}
-
 int SelectMenu(){
-	int Select = 0;
 	system("color 0F");
 	while(1){
 		if(GetAsyncKeyState(VK_UP)){
@@ -146,7 +156,6 @@ int SelectMenu(){
 			else Select ++;
 		}
 		else if(GetAsyncKeyState(VK_RETURN)){
-			getchar();
 			return Select;
 		}
 		switch (Select) {
@@ -188,6 +197,52 @@ int SelectMenu(){
 		Sleep(DELAYTIME);
 	}
 }
+void PrintGuide() 
+{
+	for (int i = 1; i < MENU_WIDTH; i++)
+	{
+		gotoxy(i, 1);
+		printf("■");
+		gotoxy(i, MENU_HEIGHT);
+		printf("■");
+	}
+
+	for (int i = 1	; i < MENU_HEIGHT; i++)
+	{
+		gotoxy(1, i);
+		printf("■");
+		gotoxy(MENU_WIDTH, i);
+		printf("■");
+	}
+	gotoxy(1, 1);
+	printf("■");
+	gotoxy(1, MENU_HEIGHT);
+	printf("■");
+	gotoxy(MENU_WIDTH, 1);
+	printf("■");
+	gotoxy(MENU_WIDTH, MENU_HEIGHT);
+	printf("■");
+	
+	gotoxy(35, 4);
+	printf("<게임 규칙>");
+	gotoxy(10, 9);
+	printf("1. 조작은 방향키(←, →, ↑, ↓)로 한다.");
+	gotoxy(10, 17);
+	printf("2. 아이템 설명");
+	gotoxy(15, 19);
+	printf("@ : 속도 증가");
+	gotoxy(15, 21);
+	printf("# : 속도 감소");
+	gotoxy(15, 23);
+	printf("$ : 꼬리 2개 증가");
+	gotoxy(15, 25);
+	printf("& : 꼬리 1개 감소");
+	gotoxy(MENU_WIDTH - 15, MENU_HEIGHT - 3);
+	SetColor(11);
+	printf("규칙 닫기");
+	SetColor(15);
+}
+
 //지렁이를 늘리는 함수(이중연결리스트의 테일쪽에 노드 추가)
 void AddWorm(pWORM wormTailNode)
 {
@@ -240,14 +295,14 @@ void PrintScore(int score)
 {
 	gotoxy(FIELD_WIDTH + 3,  3);
 	printf("점수 : %d점",score);
-	gotoxy(FIELD_WIDTH + 3, 5); 
-	printf("일시정지하려면 S를 누르세요");
+	gotoxy(FIELD_WIDTH + 3,  5);
+	printf("꼬리 개수 : %3d개", cntTail);
 	gotoxy(FIELD_WIDTH + 3,  7);
+	printf("현재 속도 : %3d%%", NowSpeed);
+	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 2); 
+	printf("일시정지하려면 O를 누르세요");
+	gotoxy(FIELD_WIDTH + 3,  FIELD_HEIGHT - 3);
 	printf("종료하려면 Q를 누르세요");
-	gotoxy(FIELD_WIDTH + 3,  9);
-	printf("조작은 화살표키로");
-	gotoxy(FIELD_WIDTH + 3,  11);
-	printf("현재 속도 : %d%%", DELAYTIME);
 }
 
 //웜이 지나간 자리 지우기
@@ -300,6 +355,23 @@ void FreeWormList(pWORM wormTailNode)
 		free(curr);
 		curr = temp;
 	}
+}
+
+
+void CleanTail(pWORM wormTailNode)
+{
+	pWORM curr;
+	curr = wormTailNode->next;
+
+	gotoxy(curr->x, curr->y);
+	printf(" ");
+
+
+	curr->next->before = curr->before;
+	curr->before->next = curr->next;
+
+	free(curr);
+
 }
 
 //item 발생시키기
@@ -415,13 +487,32 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
 			if (curr->ITEMt == '@') {
+				NowSpeed += 10;
 				DELAYTIME -= 10;
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
+				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
+
 			}
 			else if (curr->ITEMt == '#') {
+				NowSpeed -= 10;
 				DELAYTIME += 10;
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
+				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
+				cntTail ++;
+				gotoxy(FIELD_WIDTH + 3,  17);
+				printf("[$] 을(를) 섭취하고 꼬리가 2개 증가하였습니다.    ");
+			}
+			else if (curr->ITEMt == '&') {
+				CleanTail(wormTailNode);
+				CleanTail(wormTailNode);
+				cntTail --;
+				gotoxy(FIELD_WIDTH + 3,  17);
+				printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.    ");
 			}
 
 			if (curr->itemType == ITEM_EXP)
@@ -450,6 +541,45 @@ void FreeItemList(pITEM itemNode)
 	}
 }
 
+int SelRestart(){
+	int Restart = 0  ;
+	system("color 0F");
+	while(1){
+		if(GetAsyncKeyState(VK_UP)){
+			if(Restart == 0) Restart = 1;
+			else Restart--;
+		}
+		else if(GetAsyncKeyState(VK_DOWN)){
+			if(Restart == 1) Restart = 0;
+			else Restart ++;
+		}
+		else if(GetAsyncKeyState(VK_RETURN)){
+			return Restart;
+		}
+		switch (Restart) {
+			case 0: 
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				SetColor(11);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				SetColor(15); 
+				printf("게임  종료");
+				break;
+			case 1:
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				SetColor(11);
+				printf("게임  종료");
+				SetColor(15); 
+				break;
+			default: 
+				break;
+		}
+		Sleep(DELAYTIME);
+	}
+}	
+
 //실행시 테스트용으로 만들어 놓은 아이템 생성 리스트 출력함수
 /* 
 void PrintItemList(pITEM itemNode)
@@ -464,21 +594,79 @@ void PrintItemList(pITEM itemNode)
 	}
 }
 */
+
+void Save(int score) {
+	char fileName[50] = { 0 };
+	FILE * fp = fopen("Save.sv", "wt");
+
+	fprintf(fp, "%d\n", score);
+	fprintf(fp, "%d\n", DELAYTIME);
+	fprintf(fp, "%d\n", NowSpeed);
+	fprintf(fp, "%d", cntTail);
+
+	fclose(fp);
+	gotoxy(FIELD_WIDTH / 2 - 10, 7); 
+	printf("저장 완료");
+}
+
+int Load(){
+	int score = 0;
+	char fileName[50] = { 0 };
+	FILE * fp = fopen("Save.sv", "rt");
+	if (fp == NULL) return -1;
+
+	if (fscanf_s(fp, "%d", &score) != 1) {
+        score = 0; // 읽기 실패 시 기본값 설정
+    }
+
+    if (fscanf_s(fp, "%d", &DELAYTIME) != 1) {
+        DELAYTIME = 100; // 읽기 실패 시 기본값
+    }
+
+    if (fscanf_s(fp, "%d", &NowSpeed) != 1) {
+        NowSpeed = 100; // 읽기 실패 시 기본값
+    }
+	if (fscanf_s(fp, "%d", &cntTail) != 1) {
+        cntTail = 9; // 읽기 실패 시 기본값
+    }
+    
+	fclose(fp);
+	return score;
+}
+
+int PrintLoadErr(){
+	gotoxy(39, 25);
+	SetColor(11);
+	printf("저장된 데이터가 없습니다!");
+	SetColor(15);
+	while(1){
+		if(GetAsyncKeyState(VK_RETURN)){
+			return 0;
+		}
+	}
+}
+
+
 int main()
 {	
 	ShowWindow(GetConsoleWindow(), SW_MAXIMIZE);
 	SetConsoleTitle("준호수의 Snake-Game");
 	
+	DeleteCursor();
+	int Select, Restart, score = 0;
+	
+	menu:
+	
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
-	int Select = SelectMenu();
+	Select = SelectMenu();
 	if(Select == 0){
-		restarting:
+		starting:
 		pWORM wormHeadNode = malloc(sizeof(WORM));//이중연결리스트 헤드노드
 		pWORM wormTailNode = malloc(sizeof(WORM));//이중연결리스트 테일노드
 		pWORM addWorm = malloc(sizeof(WORM));//첫번째 웜몸통
 		pITEM itemNode = malloc(sizeof(ITEM));//아이템용 단일 연결리스트
-		char restart = 0;
+		
 
 		wormHeadNode->next = NULL;
 		wormHeadNode->before = addWorm;
@@ -496,21 +684,21 @@ int main()
 		system("cls");
 		PrintField();
 		//지렁이 게임시작 지렁이 생성
-		for(int i = 9; i>0 ; i--)
+		for(int i = cntTail; i>0 ; i--)
 			AddWorm(wormTailNode);
-		
+
 		//웜의 머리를 가리키는 포인터
 		pWORM wormHeadPointer = addWorm;
 
-		int score = 0;			//최초점수
+	
 		int itemCounter = 0;	//아이템 생성 한도 카운터
 		char key;				//키입력받을 변수
 		int delItemNo=0;		//지울아이템넘버를 받을 변수초기화
-		int itemNo = 10000		;//아이템의 최초번호
+		int itemNo = 10000;//아이템의 최초번호
 
 		//아이템 생성 위치 난수 시드
 		srand((unsigned int)time(NULL));
-		
+
 		while (1)
 		{
 			//테스트용 출력부분
@@ -518,40 +706,39 @@ int main()
 			//printf("먹은 아이템 : %d\n",delItemNo);
 			//PrintItemList(itemNode);
 
-			if (_kbhit() != 0)
+			if (GetAsyncKeyState(0x51))
 			{
-				
-				key = _getch();
-				if (key == 'q' || key == 'Q')
-				{
-					printf("%c", key);
-					break;
-				}
-				if (key == 's' || key == 'S') {
-					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
-					printf("일시정지 상태!\n");
-					gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
-					system("pause");
-					system("cls");
-					PrintField();
-				}
-				if (key == LEFT && wormHeadPointer->direction != RIGHT)
-				{
-					wormHeadPointer->direction = LEFT;
-				}
-				else if (key == RIGHT && wormHeadPointer->direction != LEFT)
-				{
-					wormHeadPointer->direction = RIGHT;
-				}
-				else if (key == UP && wormHeadPointer->direction != DOWN)
-				{
-					wormHeadPointer->direction = UP;
-				}
-				else if (key == DOWN && wormHeadPointer->direction != UP)
-				{
-					wormHeadPointer->direction = DOWN;
-				}
+				break;
 			}
+			if (GetAsyncKeyState(0x4F)) {
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
+				printf("일시정지 상태!\n");
+				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2 + 1);
+				system("pause");
+				system("cls");
+				PrintField();
+			}
+			if (GetAsyncKeyState(0x56)){
+				Save(score);
+				break;
+			}
+			if (GetAsyncKeyState(VK_LEFT) && wormHeadPointer->direction != RIGHT)
+			{
+				wormHeadPointer->direction = LEFT;
+			}
+			else if (GetAsyncKeyState(VK_RIGHT) && wormHeadPointer->direction != LEFT)
+			{
+				wormHeadPointer->direction = RIGHT;
+			}
+			else if (GetAsyncKeyState(VK_UP) && wormHeadPointer->direction != DOWN)
+			{
+				wormHeadPointer->direction = UP;
+			}
+			else if (GetAsyncKeyState(VK_DOWN) && wormHeadPointer->direction != UP)
+			{
+				wormHeadPointer->direction = DOWN;
+			}
+			
 			
 			//웜 지나간 자리 지우기
 			ClearWorm(wormTailNode->next->x, wormTailNode->next->y);
@@ -562,28 +749,33 @@ int main()
 			//벽에 부딛히면 게임오버
 			if (wormHeadPointer->x == 0 || wormHeadPointer->x == FIELD_WIDTH || wormHeadPointer->y == 0 || wormHeadPointer->y == FIELD_HEIGHT)
 			{
-				while(restart != 'r' && restart != 'R' && restart != 'q' && restart != 'Q'){
-					system("cls");
-					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2);
-					printf("벽에 부딛혔습니다. GAME OVER");
-					gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 1);
-					printf("다시 시작하기  R, 프로그램 종료  Q / input :  ");
-					scanf_s("%c", &restart);
-					if(restart == 'r' || restart == 'R'){
-						getchar();
+				system("cls");
+				gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
+				printf("벽에 부딛혔습니다. GAME OVER");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				printf("게임  종료");
+				Restart = SelRestart();
+
+				switch(Restart){
+					case 0:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
-						goto restarting;
-					}
-					else if(restart == 'q' || restart == 'Q'){
+						score = 0;
+						DELAYTIME = 100;
+						NowSpeed = 100;
+						cntTail = 9;
+						goto starting;
+					
+					case 1:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
-						gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 2);
+						gotoxy(FIELD_WIDTH / 2 - 8 , FIELD_HEIGHT / 2 + 8);
 						printf("프로그램을 종료합니다");
-						gotoxy(FIELD_WIDTH / 2 -10 , FIELD_HEIGHT / 2 + 3);
+						gotoxy(FIELD_WIDTH / 2 - 13 , FIELD_HEIGHT / 2 + 9);
 						system("pause");
 						return 0;
-					}
 				}
 			}
 
@@ -618,6 +810,25 @@ int main()
 		system("cls");
 		return 0;
 	}
+
+	else if(Select == 1){
+			if(Load() == -1) PrintLoadErr();
+			else {
+				score = Load();
+				goto starting;
+			}
+			goto menu;
+			
+		}
+		
+	else if(Select == 2){
+		system("cls");
+		PrintGuide();
+		while(1){
+			if(GetAsyncKeyState(VK_RETURN)) break;
+		}
+		goto menu;
+	}	
 	else if(Select == 3){
 		//FreeWormList(wormTailNode);
 		//FreeItemList(itemNode);
