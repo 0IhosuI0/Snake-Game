@@ -634,7 +634,11 @@ int Load(){
         NowSpeed = 100; // 읽기 실패 시 기본값
     }
 	if (fscanf_s(fp, "%d", &cntTail) != 1) {
+<<<<<<< HEAD
+        cntTail = 9; // 읽기 실패 시 기본값
+=======
         NowSpeed = 100; // 읽기 실패 시 기본값
+>>>>>>> c9e01faed53aaba932f1565ce072a5aa1bda7ee7
     }
     
 	fclose(fp);
@@ -701,7 +705,7 @@ int main()
 		int itemCounter = 0;	//아이템 생성 한도 카운터
 		char key;				//키입력받을 변수
 		int delItemNo=0;		//지울아이템넘버를 받을 변수초기화
-		int itemNo = 10000		;//아이템의 최초번호
+		int itemNo = 10000;//아이템의 최초번호
 
 		//아이템 생성 위치 난수 시드
 		srand((unsigned int)time(NULL));
