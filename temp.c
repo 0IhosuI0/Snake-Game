@@ -284,8 +284,14 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 	pWORM curr = wormTailNode->next;
 	while (curr != wormHeadNode)
 	{
-		gotoxy(curr->x, curr->y);
-		printf("O");
+		if(curr->next == wormHeadNode){
+			gotoxy(curr->x, curr->y);
+			printf("O");
+		}
+		else{
+			gotoxy(curr->x, curr->y);
+			printf("o");
+		}
 		curr = curr->next;
 	}
 }
@@ -527,6 +533,27 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 	return 0;//아이템을 안만나면 0
 }
 
+int CheckWormHit(pWORM wormHeadPointer)
+{
+	pWORM curr;
+	curr = wormHeadPointer -> before;
+
+	while (curr != NULL)
+	{
+		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
+		{
+			
+			return 1;
+			
+			
+		}
+		
+		curr = curr->before;
+	}
+	return 0; //몸통을 안만나면 0
+}
+
+
 //아이템의 링크드 리스트 메모리 해제
 void FreeItemList(pITEM itemNode)
 {
@@ -627,11 +654,7 @@ int Load(){
         NowSpeed = 100; // 읽기 실패 시 기본값
     }
 	if (fscanf_s(fp, "%d", &cntTail) != 1) {
-<<<<<<< HEAD
         cntTail = 9; // 읽기 실패 시 기본값
-=======
-        NowSpeed = 100; // 읽기 실패 시 기본값
->>>>>>> c9e01faed53aaba932f1565ce072a5aa1bda7ee7
     }
     
 	fclose(fp);
@@ -799,6 +822,36 @@ int main()
 				delItemFromList(itemNode, findItemNoInList(itemNode,delItemNo));
 				score += 100;
 				itemCounter--;
+			}
+			if (CheckWormHit(wormHeadPointer) == 1){
+				system("cls");
+				gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
+				printf("몸에 부딛혔습니다. GAME OVER");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 2);
+				printf("다시  시작");
+				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
+				printf("게임  종료");
+				Restart = SelRestart();
+
+				switch(Restart){
+					case 0:
+						FreeWormList(wormTailNode);
+						FreeItemList(itemNode);
+						score = 0;
+						DELAYTIME = 100;
+						NowSpeed = 100;
+						cntTail = 9;
+						goto starting;
+					
+					case 1:
+						FreeWormList(wormTailNode);
+						FreeItemList(itemNode);
+						gotoxy(FIELD_WIDTH / 2 - 8 , FIELD_HEIGHT / 2 + 8);
+						printf("프로그램을 종료합니다");
+						gotoxy(FIELD_WIDTH / 2 - 13 , FIELD_HEIGHT / 2 + 9);
+						system("pause");
+						return 0;
+				}
 			}
 			PrintItem(itemNode);
 			PrintWorm(wormTailNode, wormHeadNode);
