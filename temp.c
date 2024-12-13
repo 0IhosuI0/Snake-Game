@@ -284,7 +284,6 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 	pWORM curr = wormTailNode->next;
 	while (curr != wormHeadNode)
 	{
-<<<<<<< HEAD
 		if(curr->next == wormHeadNode){
 			gotoxy(curr->x, curr->y);
 			printf("O");
@@ -293,17 +292,6 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 			gotoxy(curr->x, curr->y);
 			printf("o");
 		}
-=======
-		if (curr->next == wormHeadNode) {
-			gotoxy(curr->x, curr->y);
-			printf("O");
-		}
-		else {
-			gotoxy(curr->x, curr->y);
-			printf("o");
-		}
-
->>>>>>> a156a5582e1693ba3c65d9b346b02dca3e7bbb3e
 		curr = curr->next;
 	}
 }
@@ -788,6 +776,7 @@ int main()
 			//º®¿¡ ºÎµóÈ÷¸é °ÔÀÓ¿À¹ö
 			if (wormHeadPointer->x == 0 || wormHeadPointer->x == FIELD_WIDTH || wormHeadPointer->y == 0 || wormHeadPointer->y == FIELD_HEIGHT)
 			{
+				remove("Save.sv");
 				system("cls");
 				gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
 				printf("º®¿¡ ºÎµóÇû½À´Ï´Ù. GAME OVER");
@@ -835,7 +824,8 @@ int main()
 				score += 100;
 				itemCounter--;
 			}
-			if (CheckWormHit(wormHeadPointer) == 1){
+			if (CheckWormHit(wormHeadPointer)){
+				remove("Save.sv");
 				system("cls");
 				gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
 				printf("¸ö¿¡ ºÎµóÇû½À´Ï´Ù. GAME OVER");
