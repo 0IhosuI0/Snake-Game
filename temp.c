@@ -279,11 +279,12 @@ void AddWorm(pWORM wormTailNode)
 }
 
 //연결리스트를 받아서 지렁이 출력
-void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)	
+void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 {
 	pWORM curr = wormTailNode->next;
 	while (curr != wormHeadNode)
 	{
+<<<<<<< HEAD
 		if(curr->next == wormHeadNode){
 			gotoxy(curr->x, curr->y);
 			printf("O");
@@ -292,6 +293,17 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 			gotoxy(curr->x, curr->y);
 			printf("o");
 		}
+=======
+		if (curr->next == wormHeadNode) {
+			gotoxy(curr->x, curr->y);
+			printf("O");
+		}
+		else {
+			gotoxy(curr->x, curr->y);
+			printf("o");
+		}
+
+>>>>>>> a156a5582e1693ba3c65d9b346b02dca3e7bbb3e
 		curr = curr->next;
 	}
 }
