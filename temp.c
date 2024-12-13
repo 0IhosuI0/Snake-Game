@@ -627,7 +627,11 @@ int Load(){
         NowSpeed = 100; // 읽기 실패 시 기본값
     }
 	if (fscanf_s(fp, "%d", &cntTail) != 1) {
+<<<<<<< HEAD
         cntTail = 9; // 읽기 실패 시 기본값
+=======
+        NowSpeed = 100; // 읽기 실패 시 기본값
+>>>>>>> c9e01faed53aaba932f1565ce072a5aa1bda7ee7
     }
     
 	fclose(fp);
