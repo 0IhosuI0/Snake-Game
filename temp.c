@@ -12,7 +12,7 @@
 #define RIGHT 77		//키보드 우
 #define UP 72			//키보드 위
 #define DOWN 80			//지보드 아래
-#define ITEM_MAX 10		//화면에 표시되는 아이템개수
+#define ITEM_MAX 4	//화면에 표시되는 아이템개수
 #define ITEM_GOLD 101	//골드 아이템 인디케이터
 #define ITEM_EXP 102	//경험치 아이템 인디케이터
 #define LEFT_MARGIN 30	//화면왼쪽마진(공백)
@@ -225,18 +225,26 @@ void PrintGuide()
 	
 	gotoxy(35, 4);
 	printf("<게임 규칙>");
-	gotoxy(10, 9);
+	gotoxy(10, 10);
 	printf("1. 조작은 방향키(←, →, ↑, ↓)로 한다.");
-	gotoxy(10, 17);
+	gotoxy(13, 11);
+	printf(" (2P의 경우 w, a, s, d 로 조작한다.) ");
+	gotoxy(10, 15);
 	printf("2. 아이템 설명");
-	gotoxy(15, 19);
+	gotoxy(15, 17);
 	printf("@ : 속도 증가");
-	gotoxy(15, 21);
+	gotoxy(15, 19);
 	printf("# : 속도 감소");
-	gotoxy(15, 23);
+	gotoxy(15, 21);
 	printf("$ : 꼬리 2개 증가");
-	gotoxy(15, 25);
+	gotoxy(15, 23);
 	printf("& : 꼬리 1개 감소");
+	gotoxy(10, 28);
+	printf("3. 벽이나 몸체에 닿을 시 게임이 종료된다.");
+	gotoxy(15, 29);
+	printf("(벽이나 몸체에 부딛혀 게임이 종료 될 시 저장된");
+	gotoxy(40, 30);
+	printf("세이브는 삭제된다.)");
 	gotoxy(MENU_WIDTH - 15, MENU_HEIGHT - 3);
 	SetColor(11);
 	printf("규칙 닫기");
