@@ -20,7 +20,7 @@
 //#define DELAYTIME 100	//Sleep함수에 들어갈 x/1000 초
 
 int DELAYTIME = 100;
-int NowSpeed = 100;
+int NowSpeed = 0;
 int Select = 0;
 int cntTail = 9;
 
@@ -384,7 +384,7 @@ void PrintScore(int score)
 	gotoxy(FIELD_WIDTH + 3,  5);
 	printf("꼬리 개수 : %3d개", cntTail);
 	gotoxy(FIELD_WIDTH + 3,  7);
-	printf("현재 속도 : %3d%%", NowSpeed);
+	printf("현재 속도 : %2d", NowSpeed);
 	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 1); 
 	printf("저장 : V");
 	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 2); 
@@ -631,16 +631,16 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
 			if (curr->ITEMt == '@') {
-				NowSpeed += 10;
-				DELAYTIME -= 10;
+				NowSpeed += 1;
+				DELAYTIME -= 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
-				NowSpeed -= 10;
-				DELAYTIME += 10;
+				NowSpeed -= 1;
+				DELAYTIME += 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
@@ -681,16 +681,16 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
 			if (curr->ITEMt == '@') {
-				NowSpeed += 10;
-				DELAYTIME -= 10;
+				NowSpeed += 1;
+				DELAYTIME -= 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
-				NowSpeed -= 10;
-				DELAYTIME += 10;
+				NowSpeed -= 1;
+				DELAYTIME += 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
@@ -885,7 +885,7 @@ int Load(){
     }
 
     if (fscanf_s(fp, "%d", &NowSpeed) != 1) {
-        NowSpeed = 100; // 읽기 실패 시 기본값
+        NowSpeed = 0; // 읽기 실패 시 기본값
     }
 	if (fscanf_s(fp, "%d", &cntTail) != 1) {
         cntTail = 9; // 읽기 실패 시 기본값
@@ -1073,7 +1073,7 @@ int main()
 						FreeItemList(itemNode);
 						score = 0;
 						DELAYTIME = 100;
-						NowSpeed = 100;
+						NowSpeed = 0;
 						cntTail = 9;
 						goto starting;
 					
@@ -1122,7 +1122,7 @@ int main()
 						FreeItemList(itemNode);
 						score = 0;
 						DELAYTIME = 100;
-						NowSpeed = 100;
+						NowSpeed = 0;
 						cntTail = 9;
 						goto starting;
 					
