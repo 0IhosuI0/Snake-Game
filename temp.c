@@ -635,7 +635,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 				DELAYTIME -= 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
+				printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
@@ -643,7 +643,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 				DELAYTIME += 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
+				printf("[#] 을(를) 섭취하고 속도가 1단계 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
@@ -685,7 +685,7 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 				DELAYTIME -= 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[@] 을(를) 섭취하고 속도가 10%% 증가하였습니다.");
+				printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
@@ -693,7 +693,7 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 				DELAYTIME += 7;
 				cntTail ++;
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[#] 을(를) 섭취하고 속도가 10%% 감소하였습니다.");
+				printf("[#] 을(를) 섭취하고 속도가 10단계 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
