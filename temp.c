@@ -385,10 +385,12 @@ void PrintScore(int score)
 	printf("꼬리 개수 : %3d개", cntTail);
 	gotoxy(FIELD_WIDTH + 3,  7);
 	printf("현재 속도 : %3d%%", NowSpeed);
+	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 1); 
+	printf("저장 : V");
 	gotoxy(FIELD_WIDTH + 3, FIELD_HEIGHT - 2); 
-	printf("일시정지하려면 O를 누르세요");
+	printf("일시정지 : O");
 	gotoxy(FIELD_WIDTH + 3,  FIELD_HEIGHT - 3);
-	printf("종료하려면 Q를 누르세요");
+	printf("종료 : Q");
 }
 
 //웜이 지나간 자리 지우기
