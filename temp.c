@@ -1091,6 +1091,7 @@ int main()
 	
 	system("cls");	//화면지우고
 	PrintMenu();	//필드 출력
+	Sleep(300);
 	Select = SelectMenu();
 	if(Select == 0){
 		Sleep(100);
