@@ -23,6 +23,7 @@ int DELAYTIME = 100;
 int NowSpeed = 0;
 int Select = 0;
 int cntTail = 9;
+int score = 0;
 
 //지렁이를 구현할 이중연결리스트 구조체
 #pragma pack(push,1)
@@ -979,8 +980,7 @@ void PrintItemList(pITEM itemNode)
 }
 */
 
-void Save(int score, pWORM wormHeadNode, pWORM wormTailNode) {
-	char fileName[50] = { 0 };
+void Save(int score,pWORM wormHeadPointer, pWORM wormHeadNode, pWORM wormTailNode) {
 	FILE * fp = fopen("Save.sv", "wt");
 	pWORM carr;
 	carr = wormHeadNode->before;
@@ -991,10 +991,9 @@ void Save(int score, pWORM wormHeadNode, pWORM wormTailNode) {
 	fprintf(fp, "%d\n", NowSpeed);
 	fprintf(fp, "%d\n", cntTail);
 
-	while (carr->before != wormTailNode)
+	while (carr->before != NULL)
 	{
-		fprintf(fp, "%d\n", carr->x);
-		fprintf(fp, "%d\n", carr->y);
+		fprintf(fp, "%d %d %d\n", carr->x, carr -> y, carr -> direction);
 		carr = carr->before;
 	}
 
@@ -1004,10 +1003,7 @@ void Save(int score, pWORM wormHeadNode, pWORM wormTailNode) {
 	printf("저장 완료");
 }
 
-int Load(pWORM wormHeadNode, pWORM wormTailNode){
-	int score = 0;
-	char fileName[50] = { 0 };
-	pWORM carr = wormHeadNode->before;
+int Load(){
 	FILE * fp = fopen("Save.sv", "rt");
 	if (fp == NULL) return -1;
 
@@ -1025,15 +1021,10 @@ int Load(pWORM wormHeadNode, pWORM wormTailNode){
 	if (fscanf_s(fp, "%d", &cntTail) != 1) {
         cntTail = 9; // 읽기 실패 시 기본값
     }
-	while (carr->before != wormTailNode)
-	{
-		fscanf_s(fp, "%d", carr->x);
-		fscanf_s(fp, "%d", carr->y);
-		carr = carr->before;
-	}
+	
     
 	fclose(fp);
-	return score;
+	return 1;
 }
 
 int PrintLoadErr(){
@@ -1099,7 +1090,7 @@ int main()
 	SetConsoleTitle("준호수의 Snake-Game");
 	
 	DeleteCursor();
-	int Select, Restart, Player, score = 0;
+	int Select, Restart, Player, load = 0;
 	
 	menu:
 	
@@ -1132,12 +1123,27 @@ int main()
 		
 		system("cls");
 		PrintField();
+		pWORM wormHeadPointer = addWorm;
 		//지렁이 게임시작 지렁이 생성
 		for(int i = cntTail; i>0 ; i--)
 			AddWorm(wormTailNode);
 
+		if(load == 1){
+			FILE * fp = fopen("Save.sv", "rt");
+			pWORM curr = wormHeadPointer -> before;
+			int temp;
+			for(int i = 0; i < 4; i++){
+				fscanf_s(fp, "%d", &temp);
+			}
+			fscanf_s(fp, "%d %d %d", wormHeadPointer -> x, wormHeadPointer -> y, wormHeadPointer -> direction);
+			for(int i = 0; i < cntTail; i++){
+				fscanf_s(fp, "%d %d %d", curr -> x, curr -> y, curr -> direction);
+				curr = curr -> before;
+			}
+			fclose(fp);
+		}
 		//웜의 머리를 가리키는 포인터
-		pWORM wormHeadPointer = addWorm;
+		
 
 	
 		int itemCounter = 0;	//아이템 생성 한도 카운터
@@ -1168,7 +1174,7 @@ int main()
 				PrintField();
 			}
 			if (GetAsyncKeyState(0x56)){
-				Save(score, wormHeadNode, wormTailNode);
+				Save(score, wormHeadPointer, wormHeadNode, wormTailNode);
 				break;
 			}
 			if (GetAsyncKeyState(VK_LEFT) && wormHeadPointer->direction != RIGHT)
@@ -1606,9 +1612,9 @@ int main()
 		
 	else if(Select == 1){
 			Sleep(100);
-			if(Load() == -1) PrintLoadErr();
+			load = Load();
+			if(load == -1) PrintLoadErr();
 			else {
-				score = Load();
 				goto starting;
 			}
 			goto menu;
