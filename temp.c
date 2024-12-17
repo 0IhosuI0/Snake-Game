@@ -198,7 +198,7 @@ int SelectMenu(){
 		Sleep(DELAYTIME);
 	}
 }
-//게임설명
+//게임설명창 생성
 void PrintGuide() 
 {
 	for (int i = 1; i < MENU_WIDTH; i++)
@@ -335,7 +335,7 @@ void PrintWorm(pWORM wormTailNode, pWORM wormHeadNode)
 		curr = curr->next;
 	}
 }
-
+// 2인플레이 1P의 지렁이 생성
 void PrintWorm1P(pWORM wormTailNode, pWORM wormHeadNode)
 {
 	pWORM curr = wormTailNode->next;
@@ -356,7 +356,7 @@ void PrintWorm1P(pWORM wormTailNode, pWORM wormHeadNode)
 		curr = curr->next;
 	}
 }
-
+//2인플레이 2P의 지렁이 생성
 void PrintWorm2P(rWORM wormTailNode, rWORM wormHeadNode)
 {
 	rWORM curr = wormTailNode->next;
@@ -431,7 +431,7 @@ void MoveWorm(pWORM wormTailNode, pWORM wormHeadNode)
 		curr->y++;
 	}
 }
-
+//2P 웜 움직이기
 void MoveWorm2P(rWORM wormTailNode, rWORM wormHeadNode)
 {
 	rWORM curr;
@@ -474,7 +474,7 @@ void FreeWormList(pWORM wormTailNode)
 		curr = temp;
 	}
 }
-
+//2P의 웜 리스트에 할당된 메모리를 순차로 해제
 void FreeWormList2P(rWORM wormTailNode)
 {
 	rWORM curr;
@@ -487,7 +487,7 @@ void FreeWormList2P(rWORM wormTailNode)
 		curr = temp;
 	}
 }
-
+//꼬리 한개 삭제
 void CleanTail(pWORM wormTailNode)
 {
 	pWORM curr;
@@ -503,7 +503,7 @@ void CleanTail(pWORM wormTailNode)
 	free(curr);
 
 }
-
+//2인플레이시 꼬리 한개 삭제
 void CleanTail2P(rWORM wormTailNode)
 {
 	rWORM curr;
@@ -621,7 +621,7 @@ int delItemFromList(pITEM itemNode, int targetNodeNumber)
 	free(target);
 }
 
-//아이템(골뱅이)와 웜의 헤드가 만났는지 검사, 
+//아이템과 웜의 헤드가 만났는지 검사, 
 //delItemNo는 먹은 아이템을 지우는 함수로 넘겨줄 변수
 int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wormTailNode)
 {
@@ -633,29 +633,36 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 		if (wormHeadPointer->x == curr->x && wormHeadPointer->y == curr->y)
 		{
 			if (curr->ITEMt == '@') {
-				if (NowSpeed <= 10)
-				{
+				gotoxy(FIELD_WIDTH + 3, 17);
+				printf("                                                            ");
 				NowSpeed += 1;
 				DELAYTIME -= 7;
 				cntTail ++;
+				if(NowSpeed > 10) {
+					NowSpeed = 10;
+					DELAYTIME = 30;
+					gotoxy(FIELD_WIDTH + 52, 17);
+					printf("[MAX]");
 				}
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("                                                            ");
-				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.[MAX 10]");
+				printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
-				if (NowSpeed >= -10)
-				{
+				gotoxy(FIELD_WIDTH + 3, 17);
+				printf("                                                             ");
 				NowSpeed -= 1;
 				DELAYTIME += 7;
-				cntTail ++;
+				cntTail++;
+				if (NowSpeed < -10)
+				{
+					NowSpeed = -10;
+					DELAYTIME = 170;
+					gotoxy(FIELD_WIDTH + 52, 17);
+					printf("[MIN]");
 				}
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("                                                             ");
-				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[#] 을(를) 섭취하고 속도가 1단계 감소하였습니다.[NIN -10]");
+				printf("[#] 을(를) 섭취하고 속도가 1단계 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
@@ -671,7 +678,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 					gotoxy(FIELD_WIDTH + 3, 17);
 					printf("                                                        ");
 					gotoxy(FIELD_WIDTH + 3, 17);
-					printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
+					printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다. [MIN]");
 				}
 				else {
 				CleanTail(wormTailNode);
@@ -680,7 +687,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 				gotoxy(FIELD_WIDTH + 3,  17);
 				printf("                                                             ");
 				gotoxy(FIELD_WIDTH + 3,  17);
-				printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
+				printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.");
 
 				}
 				
@@ -697,7 +704,7 @@ int CheckItemHit(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wo
 	}
 	return 0;//아이템을 안만나면 0
 }
-
+//2인 플레이시 1P의 헤드가 아이템과 만났는지 확인
 int CheckItemHit1P(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM wormTailNode)
 {
 	pITEM curr;
@@ -771,6 +778,7 @@ int CheckItemHit1P(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM 
 	}
 	return 0;//아이템을 안만나면 0
 }
+//2인 플레이시 2P가 아이템과 만났는지 확인
 int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM wormTailNode)
 {
 	pITEM curr;
@@ -846,7 +854,7 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 	return 0;//아이템을 안만나면 0
 }
 
-
+//웜의 머리와 몸통이 만났는지 확인
 int CheckWormHit(pWORM wormHeadPointer)
 {
 	pWORM curr;
@@ -863,7 +871,7 @@ int CheckWormHit(pWORM wormHeadPointer)
 	}
 	return 0; //몸통을 안만나면 0
 }
-
+// 2인플레이시 1P의 머리와 자신의 몸통 혹은 2P의 몸통 혹은 2P의 머리와 만났는지 확인
 int CheckWormHit1P(pWORM wormHeadPointer, rWORM wormHeadPointer2)
 {
 	pWORM curr;
@@ -887,7 +895,7 @@ int CheckWormHit1P(pWORM wormHeadPointer, rWORM wormHeadPointer2)
 	
 	return 0; //몸통을 안만나면 0
 }
-
+// 2인플레이시 2P의 머리와 자신의 몸통 혹은 1P의 몸통 혹은 1P의 머리와 만났는지 확인
 int CheckWormHit2P(rWORM wormHeadPointer2, pWORM wormHeadPointer)
 {
 	rWORM curr;
@@ -926,7 +934,7 @@ void FreeItemList(pITEM itemNode)
 		curr = temp;
 	}
 }
-
+//웜이 게임오버 되었을 때 다시 시작과 게임 종료를 표시
 int SelRestart(){
 	int Restart = 0  ;
 	system("color 0F");
@@ -966,7 +974,7 @@ int SelRestart(){
 	}
 }	
 
-
+//점수, 딜레이타임, 현재 속도, 꼬리 개수, 웜의 좌표값을 저장
 void Save(int score,pWORM wormHeadPointer, pWORM wormTailNode) {
 	FILE * fp = fopen("Save.sv", "wt");
 	pWORM carr;
@@ -989,7 +997,7 @@ void Save(int score,pWORM wormHeadPointer, pWORM wormTailNode) {
 	gotoxy(FIELD_WIDTH / 2 - 10, 7); 
 	printf("저장 완료");
 }
-
+//점수, 딜레이타임, 현재 속도, 꼬리 개수를 불러오기
 int Load(){
 	FILE * fp = fopen("Save.sv", "rt");
 	if (fp == NULL) return -1;
@@ -1013,9 +1021,9 @@ int Load(){
 	fclose(fp);
 	return 1;
 }
-
+//이어 하기 선택시 저장된 값이 없다면 print출력
 int PrintLoadErr(){
-	gotoxy(39, 25);
+	gotoxy(37, 25);
 	SetColor(11);
 	printf("저장된 데이터가 없습니다!");
 	SetColor(15);
@@ -1025,7 +1033,7 @@ int PrintLoadErr(){
 		}
 	}
 }
-
+// 새로 하기 선택시에 1P와 2P중에 선택
 int Sel2P(){
 	int Player = 1;
 	gotoxy(44, 20);
@@ -1114,7 +1122,7 @@ int main()
 		//지렁이 게임시작 지렁이 생성
 		for(int i = cntTail; i>0 ; i--)
 			AddWorm(wormTailNode);
-
+		//저장된 값이 있을 경우 꼬리의 위치 설정
 		if(load == 1){
 			FILE * fp = fopen("Save.sv", "rt");
 			pWORM curr = wormHeadPointer -> before;
@@ -1149,15 +1157,13 @@ int main()
 
 		while (1)
 		{
-			//테스트용 출력부분
-			//gotoxy(-LEFT_MARGIN, 0);
-			//printf("먹은 아이템 : %d\n",delItemNo);
-			//PrintItemList(itemNode);
 
+			//Q를 입력받으면 종료
 			if (GetAsyncKeyState(0x51))
 			{
 				break;
 			}
+			//O를 입력받으면 일시정지
 			if (GetAsyncKeyState(0x4F)) {
 				gotoxy(FIELD_WIDTH / 2 - 10, FIELD_HEIGHT / 2);
 				printf("일시정지 상태!\n");
@@ -1166,6 +1172,7 @@ int main()
 				system("cls");
 				PrintField();
 			}
+			//V를 입력받으면 저장 후 종료
 			if (GetAsyncKeyState(0x56)){
 				Save(score, wormHeadPointer, wormTailNode);
 				break;
@@ -1205,12 +1212,15 @@ int main()
 				printf("다시  시작");
 				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
 				printf("게임  종료");
+				Sleep(300);
 				Restart = SelRestart();
-
+				// 다시 시작 선택시 점수, 속도, 꼬리 개수 초기화 후 처음으로 이동
+				// 게임 종료 선택시 print출력 후 종료
 				switch(Restart){
 					case 0:
 						FreeWormList(wormTailNode);
 						FreeItemList(itemNode);
+						load = 0;
 						score = 0;
 						DELAYTIME = 100;
 						NowSpeed = 0;
@@ -1245,6 +1255,7 @@ int main()
 				score += 100;
 				itemCounter--;
 			}
+			// 머리가 몸에 부딛혔는지 확인
 			if (CheckWormHit(wormHeadPointer)){
 				remove("Save.sv");
 				system("cls");
@@ -1254,6 +1265,7 @@ int main()
 				printf("다시  시작");
 				gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
 				printf("게임  종료");
+				Sleep(300);
 				Restart = SelRestart();
 
 				switch(Restart){
