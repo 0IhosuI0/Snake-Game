@@ -1357,11 +1357,11 @@ int main()
 
 			gotoxy(FIELD_WIDTH + 3,  3);
 			SetColor(12);
-			printf("1P");
+			printf("1P : °Á, °Ê, °Ë, °È");
 			SetColor(15);
 			gotoxy(FIELD_WIDTH + 3,  5);
 			SetColor(9);
-			printf("2P");
+			printf("2P : W, A, S, D");
 			SetColor(15);
 			
 
@@ -1372,7 +1372,7 @@ int main()
 				//gotoxy(-LEFT_MARGIN, 0);
 				//printf("∏‘¿∫ æ∆¿Ã≈€ : %d\n",delItemNo);
 				//PrintItemList(itemNode);
-
+ve
 				if (GetAsyncKeyState(0x51))
 				{
 					break;
@@ -1650,8 +1650,6 @@ int main()
 		goto menu;
 	}	
 	else if(Select == 3){
-		//FreeWormList(wormTailNode);
-		//FreeItemList(itemNode);
 		system("cls");
 		return 0;
 	}	
