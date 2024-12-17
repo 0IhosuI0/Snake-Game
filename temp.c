@@ -721,11 +721,6 @@ int CheckItemHit1P(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM 
 					DELAYTIME -= 7;
 					cntTail++;
 				}
-				/*gotoxy(FIELD_WIDTH + 3, 17);
-				printf("                                                     ");
-				gotoxy(FIELD_WIDTH + 3, 17);
-				printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.");*/
-
 			}
 			else if (curr->ITEMt == '#') {
 				if (NowSpeed >= -10)
@@ -734,36 +729,19 @@ int CheckItemHit1P(pWORM wormHeadPointer, pITEM itemNode, int* delItemNo, pWORM 
 					DELAYTIME += 7;
 					cntTail++;
 				}
-				/*gotoxy(FIELD_WIDTH + 3, 17);
-				printf("                                                     ");
-				gotoxy(FIELD_WIDTH + 3, 17);
-				printf("[#] 을(를) 섭취하고 속도가 1단계 감소하였습니다.");*/
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
 				cntTail++;
-				/*gotoxy(FIELD_WIDTH + 3, 17);
-				printf("                                                     ");
-				gotoxy(FIELD_WIDTH + 3, 17);
-				printf("[$] 을(를) 섭취하고 꼬리가 2개 증가하였습니다.");*/
 			}
 			else if (curr->ITEMt == '&') {
 				if (cntTail <= 5) {
 					CleanTail(wormTailNode);
-					//gotoxy(FIELD_WIDTH + 3, 17);
-					//printf("                                                        ");
-					//gotoxy(FIELD_WIDTH + 3, 17);
-					//printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
 				}
 				else {
 				CleanTail(wormTailNode);
 				CleanTail(wormTailNode);
 				cntTail--;
-				//gotoxy(FIELD_WIDTH + 3, 17);
-				//printf("                                                        ");
-				//gotoxy(FIELD_WIDTH + 3, 17);
-				//printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
-
 				}
 			}
 
@@ -795,10 +773,6 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 					DELAYTIME -= 7;
 					cntTail++;
 				}
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("                                                     ");
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("[@] 을(를) 섭취하고 속도가 1단계 증가하였습니다.");
 
 			}
 			else if (curr->ITEMt == '#') {
@@ -808,36 +782,19 @@ int CheckItemHit2P(rWORM wormHeadPointer, pITEM itemNode, int* delItemNo, rWORM 
 					DELAYTIME += 7;
 					cntTail++;
 				}
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("                                                     ");
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("[#] 을(를) 섭취하고 속도가 10단계 감소하였습니다.");
 			}
 			else if (curr->ITEMt == '$') {
 				AddWorm(wormTailNode);
 				cntTail ++;
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("                                                     ");
-				//gotoxy(FIELD_WIDTH + 3,  17);
-				//printf("[$] 을(를) 섭취하고 꼬리가 2개 증가하였습니다.    ");
 			}
 			else if (curr->ITEMt == '&') {
 				if (cntTail <= 5) {
 					CleanTail(wormTailNode);
-					//gotoxy(FIELD_WIDTH + 3, 17);
-					//printf("                                                        ");
-					//gotoxy(FIELD_WIDTH + 3, 17);
-					//printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
 				}
 				else {
 				CleanTail(wormTailNode);
 				CleanTail(wormTailNode);
 				cntTail--;
-				//gotoxy(FIELD_WIDTH + 3, 17);
-				//printf("                                                        ");
-				//gotoxy(FIELD_WIDTH + 3, 17);
-				//printf("[&] 을(를) 섭취하고 꼬리가 감소하였습니다.[MIN 5]");
-
 				}
 
 			}
@@ -1368,10 +1325,6 @@ int main()
 			
 			while (1)
 			{
-				//테스트용 출력부분
-				//gotoxy(-LEFT_MARGIN, 0);
-				//printf("먹은 아이템 : %d\n",delItemNo);
-				//PrintItemList(itemNode);
 				if (GetAsyncKeyState(0x51))
 				{
 					break;
