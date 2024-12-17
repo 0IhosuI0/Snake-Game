@@ -98,7 +98,7 @@ void PrintField()
 	gotoxy(FIELD_WIDTH, FIELD_HEIGHT);
 	printf("┘");
 }
-
+//메인화면 생성
 void PrintMenu() 
 {
 	for (int i = 13; i < MENU_WIDTH; i++)
@@ -144,7 +144,7 @@ void PrintMenu()
 	gotoxy(44, 35);
 	printf("종료  하기");
 }
-
+//키보드 화살표를 이용한 메뉴 선택
 int SelectMenu(){
 	system("color 0F");
 	while(1){
@@ -198,6 +198,7 @@ int SelectMenu(){
 		Sleep(DELAYTIME);
 	}
 }
+//게임설명
 void PrintGuide() 
 {
 	for (int i = 1; i < MENU_WIDTH; i++)
@@ -965,20 +966,6 @@ int SelRestart(){
 	}
 }	
 
-//실행시 테스트용으로 만들어 놓은 아이템 생성 리스트 출력함수
-/* 
-void PrintItemList(pITEM itemNode)
-{
-	pITEM curr;
-	curr = itemNode->next;
-	gotoxy( -LEFT_MARGIN, 2);
-	while (curr != NULL)
-	{
-		printf("아이템번호 : %d\n", curr->itemNo);
-		curr = curr->next;
-	}
-}
-*/
 
 void Save(int score,pWORM wormHeadPointer, pWORM wormTailNode) {
 	FILE * fp = fopen("Save.sv", "wt");
@@ -1372,7 +1359,6 @@ int main()
 				//gotoxy(-LEFT_MARGIN, 0);
 				//printf("먹은 아이템 : %d\n",delItemNo);
 				//PrintItemList(itemNode);
-ve
 				if (GetAsyncKeyState(0x51))
 				{
 					break;
