@@ -980,10 +980,10 @@ void PrintItemList(pITEM itemNode)
 }
 */
 
-void Save(int score,pWORM wormHeadPointer, pWORM wormHeadNode, pWORM wormTailNode) {
+void Save(int score,pWORM wormHeadPointer, pWORM wormTailNode) {
 	FILE * fp = fopen("Save.sv", "wt");
 	pWORM carr;
-	carr = wormHeadNode->before;
+	carr = wormHeadPointer;
 
 
 	fprintf(fp, "%d\n", score);
@@ -1131,13 +1131,19 @@ int main()
 		if(load == 1){
 			FILE * fp = fopen("Save.sv", "rt");
 			pWORM curr = wormHeadPointer -> before;
-			int temp;
+			int temp, tmpx, tmpy, tmpz;
 			for(int i = 0; i < 4; i++){
 				fscanf_s(fp, "%d", &temp);
 			}
-			fscanf_s(fp, "%d %d %d", wormHeadPointer -> x, wormHeadPointer -> y, wormHeadPointer -> direction);
+			fscanf_s(fp, "%d %d %d",&tmpx, &tmpy, &tmpz);
+			wormHeadPointer -> x = tmpx;
+			wormHeadPointer -> y = tmpy;
+			wormHeadPointer -> direction = tmpz;
 			for(int i = 0; i < cntTail; i++){
-				fscanf_s(fp, "%d %d %d", curr -> x, curr -> y, curr -> direction);
+				fscanf_s(fp, "%d %d %d", &tmpx, &tmpy, &tmpz);
+				curr -> x = tmpx;
+				curr -> y = tmpy;
+				curr -> direction = tmpz;
 				curr = curr -> before;
 			}
 			fclose(fp);
@@ -1174,7 +1180,7 @@ int main()
 				PrintField();
 			}
 			if (GetAsyncKeyState(0x56)){
-				Save(score, wormHeadPointer, wormHeadNode, wormTailNode);
+				Save(score, wormHeadPointer, wormTailNode);
 				break;
 			}
 			if (GetAsyncKeyState(VK_LEFT) && wormHeadPointer->direction != RIGHT)
