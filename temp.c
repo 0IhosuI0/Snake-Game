@@ -1355,6 +1355,17 @@ int main()
 			//아이템 생성 위치 난수 시드
 			srand((unsigned int)time(NULL));
 
+			gotoxy(FIELD_WIDTH + 3,  3);
+			SetColor(12);
+			printf("1P");
+			SetColor(15);
+			gotoxy(FIELD_WIDTH + 3,  5);
+			SetColor(9);
+			printf("2P");
+			SetColor(15);
+			
+
+			
 			while (1)
 			{
 				//테스트용 출력부분
@@ -1446,7 +1457,9 @@ int main()
 					gotoxy(FIELD_WIDTH / 2 - 10 , FIELD_HEIGHT / 2);
 					printf("벽에 부딛혔습니다. GAME OVER");
 					gotoxy(FIELD_WIDTH / 2 , FIELD_HEIGHT / 2 + 2);
+					SetColor(12);
 					printf("1P WIN!");
+					SetColor(15);
 					gotoxy(FIELD_WIDTH / 2 - 2 , FIELD_HEIGHT / 2 + 4);
 					printf("게임  종료");
 						FreeWormList(wormTailNode);
